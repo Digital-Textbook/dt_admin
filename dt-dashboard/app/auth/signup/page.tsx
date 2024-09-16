@@ -10,7 +10,6 @@ import {
   Box,
   IconButton,
   InputAdornment,
-  Link as MuiLink,
 } from "@mui/material";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import axios from "axios";
@@ -32,10 +31,7 @@ const Login = () => {
     try {
       const response = await axios.post(
         "http://localhost:3001/auth/admin/login",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
 
       if (response.status === 201 && response.data.adminAccessToken) {
@@ -44,13 +40,42 @@ const Login = () => {
           "adminAccessToken",
           response.data.adminAccessToken
         );
+        localStorage.setItem(
+          "userData",
+          JSON.stringify(response.data.existingAdmin)
+        );
+
+        const storedUserData = localStorage.getItem("userData");
+        const userData = storedUserData ? JSON.parse(storedUserData) : null;
+        console.log("User data: ", userData);
+
         router.push("/dashboard");
-      } else {
-        throw new Error("Invalid response");
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const { response } = error;
+        if (response) {
+          switch (response?.status) {
+            case 409:
+              toast.error(
+                "User already logged in on another device. Please try again!"
+              );
+              break;
+            case 401:
+              toast.error("Invalid credentials!");
+              break;
+            case 400:
+              toast.error("Bad request. Please check your input.");
+              break;
+            default:
+              toast.error("An error occurred. Please try again later.");
+              break;
+          }
+        }
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
       console.error("Error:", error);
-      toast.error("Login failed. Please check your credentials.");
     }
   };
 

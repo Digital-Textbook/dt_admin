@@ -21,9 +21,6 @@ const ForgotPassword = () => {
       const { admin } = response.data;
 
       if (admin && admin.id) {
-        console.log("Response data:", response.data);
-        console.log("Admin ID: ", admin.id);
-
         toast.success("OTP sent to your email!");
         setTimeout(() => {
           router.push(`/auth/otp?id=${admin.id}`);
