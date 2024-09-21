@@ -132,7 +132,6 @@ const UpdateTextbook = () => {
         }
       })
       toast.success('Textbook updated successfully!')
-      console.log('Textbook updated successfully:', response.data)
       setTimeout(() => {
         router.push('/textbook')
       }, 3000)
@@ -317,7 +316,6 @@ const UpdateTextbook = () => {
                   type='file'
                   id='coverImage'
                   name='coverImage'
-                  value={image || ''}
                   InputLabelProps={{ shrink: true }}
                   inputProps={{ accept: 'image/*' }}
                   onChange={handleImageUpload}
