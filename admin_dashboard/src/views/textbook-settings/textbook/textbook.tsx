@@ -1,21 +1,33 @@
 'use client'
 // MUI Imports
-import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card'
+import {
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+  Box,
+  Grid,
+  Divider,
+  IconButton
+} from '@mui/material'
+import Link from 'next/link'
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
-import { Box, Button, Divider, Grid, IconButton } from '@mui/material'
-import Link from 'next/link'
 
 // Imports
 import React, { useState, useEffect } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
-import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 
 type TableBodyRowType = {
+  id: string
   author: string
   subjectName: string
   class: string
@@ -28,8 +40,11 @@ type TableBodyRowType = {
 }
 
 const TextbookPage = () => {
-  const router = useRouter()
   const [textbookData, setTextbookData] = useState<TableBodyRowType[]>([])
+  const router = useRouter()
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchTextbookData = async () => {
@@ -46,7 +61,36 @@ const TextbookPage = () => {
 
     fetchTextbookData()
   }, [])
-  console.log('Textbook Data:: ', textbookData)
+
+  const handleEdit = (id: string) => {
+    router.push(`/textbook/update?id=${id}`)
+  }
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id)
+    setOpenDeleteDialog(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (selectedId) {
+      try {
+        await axios.delete(`http://localhost:3001/Digital-textbook/textbook/${selectedId}`)
+        setTextbookData(prevData => prevData.filter(item => item.id !== selectedId))
+        toast.success('Textbook deleted successfully!')
+      } catch (error) {
+        toast.error('Error while deleting textbook!')
+      } finally {
+        setOpenDeleteDialog(false)
+        setSelectedId(null)
+      }
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false)
+    setSelectedId(null)
+  }
+
   return (
     <>
       <Grid item xs={12} flexDirection='row' sx={{ marginBottom: 5 }}>
@@ -75,7 +119,7 @@ const TextbookPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='addTextbook' passHref>
+          <Link href='textbook/add' passHref>
             <Button
               variant='contained'
               sx={{
@@ -185,6 +229,7 @@ const TextbookPage = () => {
                             background: '#4caf50'
                           }
                         }}
+                        onClick={() => handleEdit(row.id)}
                       >
                         Edit
                       </Button>
@@ -197,6 +242,7 @@ const TextbookPage = () => {
                             background: '#ef5350'
                           }
                         }}
+                        onClick={() => handleDeleteClick(row.id)}
                       >
                         Delete
                       </Button>
@@ -208,6 +254,23 @@ const TextbookPage = () => {
           </table>
         </div>
       </Card>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this textbook? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

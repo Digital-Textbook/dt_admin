@@ -109,6 +109,9 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
           <MenuItem href='/user' icon={<i className='ri-user-fill' />}>
             Users
           </MenuItem>
+          <MenuItem href='/subject' icon={<i className='ri-git-repository-fill' />}>
+            Subject
+          </MenuItem>
         </MenuSection>
       </Menu>
     </ScrollWrapper>

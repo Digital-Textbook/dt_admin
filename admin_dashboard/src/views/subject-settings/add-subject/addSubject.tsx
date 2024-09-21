@@ -9,6 +9,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
 
+import Form from '@components/Form'
 import { Divider, InputLabel, MenuItem } from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
@@ -25,7 +26,7 @@ interface SubjectAndClass {
   subjects: Subject[]
 }
 
-const AddTextbook = () => {
+const AddSubject = () => {
   const [author, setAuthor] = useState('')
 
   const [subject, setSubject] = useState('')
@@ -55,8 +56,6 @@ const AddTextbook = () => {
 
     fetchTextbookData()
   }, [])
-
-  console.log('Subjects data::', classData)
 
   useEffect(() => {
     const selectedClass = classData.find(cls => cls.className === grade)
@@ -125,7 +124,7 @@ const AddTextbook = () => {
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Add Textbook' />
+          <CardHeader title='Add Subject' />
           <Divider />
         </Grid>
         <CardContent>
@@ -333,4 +332,4 @@ const AddTextbook = () => {
   )
 }
 
-export default AddTextbook
+export default AddSubject
