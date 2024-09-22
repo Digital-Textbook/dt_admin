@@ -14,22 +14,28 @@ import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Divider, InputLabel, MenuItem } from '@mui/material'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 interface Classes {
   id: string
   class: string
 }
 
-const AddSubject = () => {
+const UpdateSubject = () => {
   const [subjectName, setSubjectName] = useState('')
   const [grade, setGrade] = useState('')
   const [classId, setClassId] = useState('')
   const [filteredClasses, setFilteredClasses] = useState<Classes[]>([])
 
   const [classData, setClassData] = useState<Classes[]>([])
+  const [subjectData, setSubjectdata] = useState<Classes[]>([])
+
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
+  const router = useRouter()
 
   useEffect(() => {
-    const fetchSubjectData = async () => {
+    const fetchClassData = async () => {
       try {
         const response: AxiosResponse<Classes[]> = await axios.get(
           'http://localhost:3001/Digital-textbook/subject/class'
@@ -41,8 +47,30 @@ const AddSubject = () => {
       }
     }
 
-    fetchSubjectData()
+    fetchClassData()
   }, [])
+
+  useEffect(() => {
+    const fetchSubjectData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/Digital-textbook/subject/${id}`)
+        setSubjectdata(response.data)
+        if (response.data) {
+          setGrade(response.data.class)
+          setSubjectName(response.data.subjectName)
+        }
+      } catch (err) {
+        console.error('Error fetching textbook data:', err)
+        toast.error('Error while fetching textbook!')
+      }
+    }
+
+    if (id) {
+      fetchSubjectData()
+    }
+  }, [id])
+
+  console.log('SUbject Data:: ', subjectData)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -150,4 +178,4 @@ const AddSubject = () => {
   )
 }
 
-export default AddSubject
+export default UpdateSubject

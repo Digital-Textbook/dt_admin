@@ -22,7 +22,7 @@ import tableStyles from '@core/styles/table.module.css'
 // Imports
 import React, { useState, useEffect } from 'react'
 import axios, { AxiosResponse } from 'axios'
-import { toast } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 
@@ -93,6 +93,7 @@ const TextbookPage = () => {
 
   return (
     <>
+      <ToastContainer />
       <Grid item xs={12} flexDirection='row' sx={{ marginBottom: 5 }}>
         <Box
           sx={{

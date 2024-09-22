@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material'
 import UpdateTextbook from '@/views/textbook-settings/edit-textbook/editTextbook'
 
-const AddTextbookPage = () => {
+const UpdateTextbookPage = () => {
   return (
     <Grid>
       <UpdateTextbook />
@@ -9,4 +9,4 @@ const AddTextbookPage = () => {
   )
 }
 
-export default AddTextbookPage
+export default UpdateTextbookPage

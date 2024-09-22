@@ -97,7 +97,6 @@ const AddTextbook = () => {
       formData.append('textbookFile', file, file.name) // Ensure you include the filename
     }
 
-    // Log FormData contents for debugging
     for (const [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`)
     }
@@ -108,7 +107,6 @@ const AddTextbook = () => {
           'Content-Type': 'multipart/form-data'
         }
       })
-      console.log('Uploading files...')
       toast.success('Textbook uploaded successfully!')
       console.log('Textbook uploaded successfully:', response.data)
       setTimeout(() => {

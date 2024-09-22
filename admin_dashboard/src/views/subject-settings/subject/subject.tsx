@@ -1,11 +1,22 @@
 'use client'
 // MUI Imports
-import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card'
+import {
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+  Box,
+  Grid,
+  Divider,
+  IconButton
+} from '@mui/material'
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
-import { Box, Button, Divider, Grid, IconButton } from '@mui/material'
 import Link from 'next/link'
 
 // Imports
@@ -15,40 +26,64 @@ import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 
-type TableBodyRowType = {
-  author: string
+type subjects = {
   subjectName: string
-  class: string
-  chapter: string
-  totalPages: string
-  summary: string
-  edition: string
-  coverUrl?: string
-  textbookUrl?: string
+  id: string
+  className: string
+  classId: string
 }
 
 const SubjectPage = () => {
   const router = useRouter()
-  const [textbookData, setTextbookData] = useState<TableBodyRowType[]>([])
+  const [subjectData, setsubjectData] = useState<subjects[]>([])
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchTextbookData = async () => {
+    const fetchSubjectData = async () => {
       try {
-        const response: AxiosResponse<TableBodyRowType[]> = await axios.get(
-          'http://localhost:3001/Digital-textbook/textbook'
-        )
-        setTextbookData(response.data)
+        const response: AxiosResponse<subjects[]> = await axios.get('http://localhost:3001/Digital-textbook/subject')
+        setsubjectData(response.data)
       } catch (err) {
         console.error('Error fetching textbook data:', err)
         toast.error('Error while fetching textbook!')
       }
     }
 
-    fetchTextbookData()
+    fetchSubjectData()
   }, [])
-  console.log('Textbook Data:: ', textbookData)
+
+  const handleEdit = (id: string) => {
+    router.push(`/subject/update?id=${id}`)
+  }
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id)
+    setOpenDeleteDialog(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (selectedId) {
+      try {
+        await axios.delete(`http://localhost:3001/Digital-textbook/subject/${selectedId}`)
+        toast.success('Subject deleted successfully!')
+      } catch (error) {
+        toast.error('Error while deleting subject!')
+      } finally {
+        setOpenDeleteDialog(false)
+        setSelectedId(null)
+      }
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false)
+    setSelectedId(null)
+  }
   return (
     <>
+      <ToastContainer />
       <Grid item xs={12} flexDirection='row' sx={{ marginBottom: 5 }}>
         <Box
           sx={{
@@ -75,7 +110,7 @@ const SubjectPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='addTextbook' passHref>
+          <Link href='subject/add' passHref>
             <Button
               variant='contained'
               sx={{
@@ -103,13 +138,13 @@ const SubjectPage = () => {
               </tr>
             </thead>
             <tbody>
-              {textbookData.map((row, index) => (
+              {subjectData.map((row, index) => (
                 <tr key={index}>
                   <td className='!plb-1'>
                     <Typography>{row.subjectName}</Typography>
                   </td>
                   <td className='!plb-1'>
-                    <Typography>{row.class}</Typography>
+                    <Typography>{row.className}</Typography>
                   </td>
 
                   <td className='!plb-1'>
@@ -129,6 +164,7 @@ const SubjectPage = () => {
                             background: '#4caf50'
                           }
                         }}
+                        onClick={() => handleEdit(row.id)}
                       >
                         Edit
                       </Button>
@@ -141,6 +177,7 @@ const SubjectPage = () => {
                             background: '#ef5350'
                           }
                         }}
+                        onClick={() => handleDeleteClick(row.id)}
                       >
                         Delete
                       </Button>
@@ -152,6 +189,23 @@ const SubjectPage = () => {
           </table>
         </div>
       </Card>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this subject? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }
