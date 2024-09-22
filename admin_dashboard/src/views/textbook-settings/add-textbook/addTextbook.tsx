@@ -14,6 +14,7 @@ import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useRouter } from 'next/navigation'
 
 type Subject = any
 
@@ -41,6 +42,7 @@ const AddTextbook = () => {
 
   const [classData, setClassData] = useState<SubjectAndClass[]>([])
   const [filteredSubjects, setFilteredSubjects] = useState<SubjectAndClass[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const fetchTextbookData = async () => {
@@ -55,8 +57,6 @@ const AddTextbook = () => {
 
     fetchTextbookData()
   }, [])
-
-  console.log('Subjects data::', classData)
 
   useEffect(() => {
     const selectedClass = classData.find(cls => cls.className === grade)
@@ -91,14 +91,10 @@ const AddTextbook = () => {
     formData.append('summary', summary)
 
     if (image) {
-      formData.append('textbookImage', image) // Ensure you include the filename
+      formData.append('textbookImage', image)
     }
     if (file) {
-      formData.append('textbookFile', file, file.name) // Ensure you include the filename
-    }
-
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`)
+      formData.append('textbookFile', file, file.name)
     }
 
     try {
@@ -108,9 +104,8 @@ const AddTextbook = () => {
         }
       })
       toast.success('Textbook uploaded successfully!')
-      console.log('Textbook uploaded successfully:', response.data)
       setTimeout(() => {
-        window.location.reload()
+        router.push('/textbook')
       }, 3000)
     } catch (error) {
       toast.error('Error while uploading textbook. Please try again!')

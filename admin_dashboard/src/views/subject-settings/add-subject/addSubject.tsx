@@ -14,6 +14,7 @@ import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Divider, InputLabel, MenuItem } from '@mui/material'
+import { useRouter } from 'next/navigation'
 
 interface Classes {
   id: string
@@ -24,12 +25,11 @@ const AddSubject = () => {
   const [subjectName, setSubjectName] = useState('')
   const [grade, setGrade] = useState('')
   const [classId, setClassId] = useState('')
-  const [filteredClasses, setFilteredClasses] = useState<Classes[]>([])
-
   const [classData, setClassData] = useState<Classes[]>([])
+  const router = useRouter()
 
   useEffect(() => {
-    const fetchSubjectData = async () => {
+    const fetchClassData = async () => {
       try {
         const response: AxiosResponse<Classes[]> = await axios.get(
           'http://localhost:3001/Digital-textbook/subject/class'
@@ -41,29 +41,17 @@ const AddSubject = () => {
       }
     }
 
-    fetchSubjectData()
+    fetchClassData()
   }, [])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData()
 
-    formData.append('classId', classId)
-    formData.append('subjectName', subjectName)
-
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`)
-    }
     try {
-      const response = await axios.post('http://localhost:3001/Digital-textbook/subject', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      const response = await axios.post('http://localhost:3001/Digital-textbook/subject', { classId, subjectName })
       toast.success('Textbook uploaded successfully!')
-      console.log('Textbook uploaded successfully:', response.data)
       setTimeout(() => {
-        window.location.reload()
+        router.push('/subject')
       }, 3000)
     } catch (error) {
       toast.error('Error while uploading textbook. Please try again!')
@@ -92,7 +80,7 @@ const AddSubject = () => {
                   value={grade}
                   required
                   onChange={e => {
-                    const selectedClass = filteredClasses.find(cls => cls.class === e.target.value)
+                    const selectedClass = classData.find(cls => cls.class === e.target.value)
                     if (selectedClass) {
                       setGrade(e.target.value)
                       setClassId(selectedClass.id)
@@ -120,7 +108,6 @@ const AddSubject = () => {
                   fullWidth
                   id='subjectName'
                   name='subjectName'
-                  placeholder='8'
                   value={subjectName}
                   required
                   onChange={e => setSubjectName(e.target.value)}
@@ -138,7 +125,7 @@ const AddSubject = () => {
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' onClick={() => router.push('/subject')}>
                   Cancel
                 </Button>
               </Grid>

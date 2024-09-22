@@ -25,7 +25,6 @@ const UpdateSubject = () => {
   const [subjectName, setSubjectName] = useState('')
   const [grade, setGrade] = useState('')
   const [classId, setClassId] = useState('')
-  const [filteredClasses, setFilteredClasses] = useState<Classes[]>([])
 
   const [classData, setClassData] = useState<Classes[]>([])
   const [subjectData, setSubjectdata] = useState<Classes[]>([])
@@ -70,32 +69,21 @@ const UpdateSubject = () => {
     }
   }, [id])
 
-  console.log('SUbject Data:: ', subjectData)
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData()
 
-    formData.append('classId', classId)
-    formData.append('subjectName', subjectName)
-
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`)
-    }
     try {
-      const response = await axios.post('http://localhost:3001/Digital-textbook/subject', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const response = await axios.patch(`http://localhost:3001/Digital-textbook/subject/${id}`, {
+        classId,
+        subjectName
       })
-      toast.success('Textbook uploaded successfully!')
-      console.log('Textbook uploaded successfully:', response.data)
+      toast.success('Subject updated successfully!')
       setTimeout(() => {
-        window.location.reload()
+        router.push('/subject')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading textbook. Please try again!')
-      console.error('Error uploading textbook:', error)
+      toast.error('Error while updating Subject. Please try again!')
+      console.error('Error while updating Subject:', error)
     }
   }
 
@@ -104,7 +92,7 @@ const UpdateSubject = () => {
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Add Subject' />
+          <CardHeader title='Update Subject' />
           <Divider />
         </Grid>
         <CardContent>
@@ -120,7 +108,7 @@ const UpdateSubject = () => {
                   value={grade}
                   required
                   onChange={e => {
-                    const selectedClass = filteredClasses.find(cls => cls.class === e.target.value)
+                    const selectedClass = classData.find(cls => cls.class === e.target.value)
                     if (selectedClass) {
                       setGrade(e.target.value)
                       setClassId(selectedClass.id)
@@ -148,7 +136,6 @@ const UpdateSubject = () => {
                   fullWidth
                   id='subjectName'
                   name='subjectName'
-                  placeholder='8'
                   value={subjectName}
                   required
                   onChange={e => setSubjectName(e.target.value)}
@@ -166,7 +153,8 @@ const UpdateSubject = () => {
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+
+                <Button variant='contained' onClick={() => router.push('/subject')}>
                   Cancel
                 </Button>
               </Grid>

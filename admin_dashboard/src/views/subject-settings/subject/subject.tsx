@@ -68,6 +68,9 @@ const SubjectPage = () => {
       try {
         await axios.delete(`http://localhost:3001/Digital-textbook/subject/${selectedId}`)
         toast.success('Subject deleted successfully!')
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
       } catch (error) {
         toast.error('Error while deleting subject!')
       } finally {

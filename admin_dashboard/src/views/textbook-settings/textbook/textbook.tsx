@@ -76,7 +76,7 @@ const TextbookPage = () => {
       try {
         await axios.delete(`http://localhost:3001/Digital-textbook/textbook/${selectedId}`)
         setTextbookData(prevData => prevData.filter(item => item.id !== selectedId))
-        toast.success('Textbook deleted successfully!')
+        toast.success('Textbook and associated bookmarks and notes deleted successfully!')
       } catch (error) {
         toast.error('Error while deleting textbook!')
       } finally {
@@ -260,7 +260,8 @@ const TextbookPage = () => {
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this textbook? This action cannot be undone.
+            Are you sure you want to delete this textbook? Notes and bookmarks associated with textbook will also be
+            deleted. This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
