@@ -47,7 +47,7 @@ const AddTextbook = () => {
   useEffect(() => {
     const fetchTextbookData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/Digital-textbook/common/subject/')
+        const response = await axios.get('http://localhost:3001/Digital-textbook/common/subject')
         setClassData(response.data)
       } catch (err) {
         console.error('Error fetching textbook data:', err)

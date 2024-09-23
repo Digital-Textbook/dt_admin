@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid'
 
-import UserTable from '@/views/users/user-table/user-table'
+import UserTable from '@/views/users/user/user'
 
-const userTablePage = () => {
+const userViewPage = () => {
   return (
     <Grid item sm={12} md={12} lg={12}>
       <UserTable />
@@ -10,4 +10,4 @@ const userTablePage = () => {
   )
 }
 
-export default userTablePage
+export default userViewPage

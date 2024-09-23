@@ -58,7 +58,7 @@ const Login = ({ mode }: { mode: Mode }) => {
         const storedUserData = localStorage.getItem('userData')
         const userData = storedUserData ? JSON.parse(storedUserData) : null
 
-        console.log('User Data: ', userData)
+        // console.log('User Data: ', userData)
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

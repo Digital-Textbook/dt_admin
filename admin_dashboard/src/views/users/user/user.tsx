@@ -1,52 +1,90 @@
+'use client'
 // MUI Imports
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
-import { Box, Button, Divider, Grid, IconButton } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton
+} from '@mui/material'
 import Link from 'next/link'
 
-type TableBodyRowType = {
+import React, { useState, useEffect } from 'react'
+import axios, { AxiosResponse } from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useRouter } from 'next/navigation'
+
+type UserData = {
+  id: string
   name: string
   cidNo: string
-  mobile: string
+  mobileNo: string
   userType: string
-  status: string
   email: string
 }
 
-// Vars
-const rowsData: TableBodyRowType[] = [
-  {
-    name: 'Sonam',
-    cidNo: '11807001234',
-    mobile: '17234567',
-    userType: 'BhutaneseCid',
-    status: 'active',
-    email: 'sonam231@gmail.com!'
-  },
-  {
-    name: 'Sangay',
-    cidNo: '11807009876',
-    mobile: '17000000',
-    userType: 'BhutanesePermit',
-    status: 'inactive',
-    email: 'sola2001@gmail.com!'
-  },
-  {
-    name: 'John',
-    cidNo: '11807006523',
-    mobile: '17987654',
-    userType: 'Non-Bhutanese',
-    status: 'inactive',
-    email: 'john1999@gmail.com!'
-  }
-]
-
 const UserTable = () => {
+  const [userData, setUserData] = useState<UserData[]>([])
+  const router = useRouter()
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response: AxiosResponse<UserData[]> = await axios.get('http://localhost:3001/Digital-textbook/user')
+        setUserData(response.data)
+      } catch (error) {
+        console.log('Error fetching user data!: ', error)
+        toast.error('Error while fetching textbook!')
+      }
+    }
+    fetchUserData()
+  }, [])
+
+  const handleEdit = (id: string) => {
+    router.push(`/user/update?id=${id}`)
+  }
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id)
+    setOpenDeleteDialog(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (selectedId) {
+      try {
+        await axios.delete(`http://localhost:3001/Digital-textbook/user/${selectedId}`)
+        setUserData(prevData => prevData.filter(item => item.id !== selectedId))
+        toast.success('User and associated data deleted successfully!')
+      } catch (error) {
+        toast.error('Error while deleting user!')
+      } finally {
+        setOpenDeleteDialog(false)
+        setSelectedId(null)
+      }
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false)
+    setSelectedId(null)
+  }
   return (
     <>
+      <ToastContainer />
       <Grid item xs={12} flexDirection='row' sx={{ marginBottom: 5 }}>
         <Box
           sx={{
@@ -65,7 +103,7 @@ const UserTable = () => {
               gap: 2
             }}
           >
-            <Typography variant='h4'>User Table</Typography>
+            <Typography variant='h4'>User</Typography>
             <div className='flex items-center cursor-pointer gap-2' style={{ flexGrow: 1 }}>
               <IconButton className='text-textPrimary'>
                 <i className='ri-search-line' />
@@ -73,7 +111,7 @@ const UserTable = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='addTextbook' passHref>
+          <Link href='user/add' passHref>
             <Button
               variant='contained'
               sx={{
@@ -100,12 +138,11 @@ const UserTable = () => {
                 <th>Mobile No.</th>
                 <th>Email</th>
                 <th>User Type</th>
-                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {rowsData.map((row, index) => {
+              {userData.map((row, index) => {
                 return (
                   <tr key={index}>
                     <td className='!plb-1'>
@@ -115,16 +152,13 @@ const UserTable = () => {
                       <Typography>{row.cidNo}</Typography>
                     </td>
                     <td className='!plb-1'>
-                      <Typography>{row.mobile}</Typography>
+                      <Typography>{row.mobileNo}</Typography>
                     </td>
                     <td className='!plb-1'>
                       <Typography>{row.email}</Typography>
                     </td>
                     <td className='!plb-1'>
                       <Typography>{row.userType}</Typography>
-                    </td>
-                    <td className='!plb-1'>
-                      <Typography>{row.status}</Typography>
                     </td>
                     <td className='!plb-1'>
                       <Box
@@ -143,6 +177,7 @@ const UserTable = () => {
                               background: '#4caf50'
                             }
                           }}
+                          onClick={() => handleEdit(row.id)}
                         >
                           Edit
                         </Button>
@@ -155,6 +190,7 @@ const UserTable = () => {
                               background: '#ef5350'
                             }
                           }}
+                          onClick={() => handleDeleteClick(row.id)}
                         >
                           Delete
                         </Button>
@@ -167,6 +203,25 @@ const UserTable = () => {
           </table>
         </div>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this user? User profiles, notes and bookmarks associated with user will also
+            be deleted. This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }
