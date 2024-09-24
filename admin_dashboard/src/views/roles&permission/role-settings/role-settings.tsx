@@ -1,111 +1,99 @@
 'use client'
 
-import { Avatar, AvatarGroup, Card, CardContent, Chip, Container, Grid, IconButton, Typography } from '@mui/material'
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton,
+  Paper,
+  Typography
+} from '@mui/material'
 import Link from 'next/link'
 import tableStyles from '@core/styles/table.module.css'
 
-// Third-party Imports
-import classnames from 'classnames'
-import CustomAvatar from '@/@core/components/mui/Avatar'
+import { useEffect, useState } from 'react'
+import axios, { AxiosResponse } from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
-type TableBodyRowType = {
-  avatarSrc?: string
+type admin = {
+  id: string
   name: string
-  username: string
   email: string
-  iconClass: string
-  roleIcon?: string
-  role: string
+  roles: string
   status: string
+  mobile_no: string
 }
 
-// Vars
-const rowsData: TableBodyRowType[] = [
-  {
-    avatarSrc: '/images/avatars/1.png',
-    name: 'Jordan Stevenson',
-    username: '@amiccoo',
-    email: 'Jacinthe_Blick@hotmail.com',
-    iconClass: 'text-primary',
-    roleIcon: 'ri-vip-crown-line',
-    role: 'Admin',
-    status: 'pending'
-  },
-  {
-    avatarSrc: '/images/avatars/2.png',
-    name: 'Richard Payne',
-    username: '@brossiter15',
-    email: 'Jaylon_Bartell3@gmail.com',
-    iconClass: 'text-warning',
-    roleIcon: 'ri-edit-box-line',
-    role: 'Editor',
-    status: 'active'
-  },
-  {
-    avatarSrc: '/images/avatars/3.png',
-    name: 'Jennifer Summers',
-    username: '@jsbemblinf',
-    email: 'Tristin_Johnson@gmail.com',
-    iconClass: 'text-error',
-    roleIcon: 'ri-computer-line',
-    role: 'Author',
-    status: 'active'
-  },
-  {
-    avatarSrc: '/images/avatars/4.png',
-    name: 'Mr. Justin Richardson',
-    username: '@justin45',
-    email: 'Toney21@yahoo.com',
-    iconClass: 'text-warning',
-    roleIcon: 'ri-edit-box-line',
-    role: 'Editor',
-    status: 'pending'
-  },
-  {
-    avatarSrc: '/images/avatars/5.png',
-    name: 'Nicholas Tanner',
-    username: '@tannernic',
-    email: 'Hunter_Kuhic68@hotmail.com',
-    iconClass: 'text-info',
-    roleIcon: 'ri-pie-chart-2-line',
-    role: 'Maintainer',
-    status: 'active'
-  },
-  {
-    avatarSrc: '/images/avatars/6.png',
-    name: 'Crystal Mays',
-    username: '@crystal99',
-    email: 'Norene_Bins@yahoo.com',
-    iconClass: 'text-warning',
-    roleIcon: 'ri-edit-box-line',
-    role: 'Editor',
-    status: 'pending'
-  },
-  {
-    avatarSrc: '/images/avatars/7.png',
-    name: 'Mary Garcia',
-    username: '@marygarcia4',
-    email: 'Emmitt.Walker14@hotmail.com',
-    iconClass: 'text-info',
-    roleIcon: 'ri-pie-chart-2-line',
-    role: 'Maintainer',
-    status: 'inactive'
-  },
-  {
-    avatarSrc: '/images/avatars/8.png',
-    name: 'Megan Roberts',
-    username: '@megan78',
-    email: 'Patrick.Howe73@gmail.com',
-    iconClass: 'text-success',
-    roleIcon: 'ri-user-3-line',
-    role: 'Subscriber',
-    status: 'active'
-  }
-]
-
 const RoleSettingsPage = () => {
+  const [adminData, setAdminData] = useState<admin[]>([])
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchadminData = async () => {
+      try {
+        const response: AxiosResponse<admin[]> = await axios.get('http://localhost:3001/digital-textbook/admin')
+        setAdminData(response.data)
+      } catch (err) {
+        console.error('Error fetching admin data:', err)
+        toast.error('Error while fetching admin!')
+      }
+    }
+
+    fetchadminData()
+  }, [])
+
+  const handleEdit = (id: string) => {
+    router.push(`/roles/update?id=${id}`)
+  }
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id)
+    setOpenDeleteDialog(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (selectedId) {
+      try {
+        await axios.delete(`http://localhost:3001/digital-textbook/admin/${selectedId}`)
+        toast.success('Admin and associated data deleted successfully!')
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
+      } catch (error) {
+        toast.error('Error while deleting admin!')
+      } finally {
+        setOpenDeleteDialog(false)
+        setSelectedId(null)
+      }
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false)
+    setSelectedId(null)
+  }
   return (
     <Grid item xs={12} flexDirection='row'>
+      <ToastContainer />
       <Typography fontSize={24} mt={5} fontWeight={'400'}>
         Role List
       </Typography>
@@ -113,7 +101,8 @@ const RoleSettingsPage = () => {
         A role provided access to predefined menus and features so that depending on assigned role an administrator can
         have access to what he need
       </Typography>
-      <Grid container spacing={5} mt={5}>
+
+      <Grid container spacing={5} mt={3} mb={5}>
         <Grid item xs={12} sm={6} md={4}>
           <Card elevation={1}>
             <CardContent className='flex flex-col gap-4'>
@@ -129,7 +118,6 @@ const RoleSettingsPage = () => {
                 </AvatarGroup>
               </div>
 
-              {/* Content Section with Title and Edit Role Link */}
               <div className='flex justify-between items-center'>
                 <div className='flex flex-col items-start gap-1'>
                   <Typography variant='h5'>Administrator</Typography>
@@ -139,7 +127,6 @@ const RoleSettingsPage = () => {
                   </Link>
                 </div>
 
-                {/* Icon Button */}
                 <IconButton aria-label='copy'>{<i className='ri-graduation-cap-line' />}</IconButton>
               </div>
             </CardContent>
@@ -161,7 +148,6 @@ const RoleSettingsPage = () => {
                 </AvatarGroup>
               </div>
 
-              {/* Content Section with Title and Edit Role Link */}
               <div className='flex justify-between items-center'>
                 <div className='flex flex-col items-start gap-1'>
                   <Typography variant='h5'>Super Admin</Typography>
@@ -171,7 +157,6 @@ const RoleSettingsPage = () => {
                   </Link>
                 </div>
 
-                {/* Icon Button */}
                 <IconButton aria-label='copy'>{<i className='ri-graduation-cap-line' />}</IconButton>
               </div>
             </CardContent>
@@ -193,39 +178,6 @@ const RoleSettingsPage = () => {
                 </AvatarGroup>
               </div>
 
-              {/* Content Section with Title and Edit Role Link */}
-              <div className='flex justify-between items-center'>
-                <div className='flex flex-col items-start gap-1'>
-                  <Typography variant='h5'>Administrator</Typography>
-
-                  <Link href='/permission' style={{ color: '#765feb' }}>
-                    Edit Role
-                  </Link>
-                </div>
-
-                {/* Icon Button */}
-                <IconButton aria-label='copy'>{<i className='ri-graduation-cap-line' />}</IconButton>
-              </div>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={1}>
-            <CardContent className='flex flex-col gap-4'>
-              <div className='flex items-center justify-between'>
-                <Typography variant='body1' className='flex-grow'>
-                  Total 4 users
-                </Typography>
-                <AvatarGroup max={4}>
-                  <Avatar alt='Administrator' src='/images/avatars/1.png' />
-                  <Avatar alt='Administrator' src='/images/avatars/2.png' />
-                  <Avatar alt='Administrator' src='/images/avatars/3.png' />
-                  <Avatar alt='Administrator' src='/images/avatars/4.png' />
-                </AvatarGroup>
-              </div>
-
-              {/* Content Section with Title and Edit Role Link */}
               <div className='flex justify-between items-center'>
                 <div className='flex flex-col items-start gap-1'>
                   <Typography variant='h5'>User</Typography>
@@ -235,21 +187,74 @@ const RoleSettingsPage = () => {
                   </Link>
                 </div>
 
-                {/* Icon Button */}
                 <IconButton aria-label='copy'>{<i className='ri-graduation-cap-line' />}</IconButton>
               </div>
             </CardContent>
           </Card>
         </Grid>
+
+        <Grid item xs={12} sm={6} md={4}>
+          <Card elevation={1} className='cursor-pointer'>
+            <CardContent className='flex flex-col gap-4' sx={{ padding: 0 }}>
+              <Grid container className='bs-full'>
+                <Grid item xs={5}>
+                  <div className='flex items-end justify-center bs-full'>
+                    <Image alt='add-role' src='/images/avatars/addRole.png' height={130} width={110} />
+                  </div>
+                </Grid>
+
+                <Grid item xs={7}>
+                  <CardContent className='mui-123q56s'>
+                    <div className='flex flex-col items-end gap-4 text-right'>
+                      <Button variant='contained' color='primary' size='small'>
+                        Add Role
+                      </Button>
+                      <Typography variant='body1'>
+                        Add new role, <br />
+                        if it doesn't exist.
+                      </Typography>
+                    </div>
+                  </CardContent>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
 
-      {/* table title */}
-      <Typography fontSize={24} mt={5} fontWeight={'200'}>
-        Total users with their roles
-      </Typography>
-      <Typography fontSize={16} mb={5}>
-        Find all of your company's administrator accounts and their associate roles.{' '}
-      </Typography>
+      {/* table title  */}
+      <Box mb={5}>
+        <Typography fontSize={24} mt={5} fontWeight={'200'}>
+          Total users with their roles
+        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Typography fontSize={16} mb={5}>
+            Find all of digital textbook's administrator accounts and their associate roles.
+          </Typography>
+
+          <Link href='roles/add' passHref>
+            <Button
+              variant='contained'
+              sx={{
+                background: 'green',
+                color: 'white',
+                '&:hover': {
+                  background: '#4caf50'
+                }
+              }}
+            >
+              Add
+            </Button>
+          </Link>
+        </Box>
+        <Divider />
+      </Box>
 
       <Card>
         <div className='overflow-x-auto'>
@@ -260,39 +265,92 @@ const RoleSettingsPage = () => {
                 <th>Email</th>
                 <th>Role</th>
                 <th>Status</th>
+                <th>Mobile No.</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {rowsData.map((row, index) => (
+              {adminData.map((row, index) => (
                 <tr key={index}>
                   <td className='!plb-1'>
                     <div className='flex items-center gap-3'>
-                      <CustomAvatar src={row.avatarSrc} size={34} />
+                      <div
+                        style={{
+                          width: 34,
+                          height: 34,
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #b388ff, #5e35b1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {row.name.charAt(0).toUpperCase()}
+                      </div>
                       <div className='flex flex-col'>
-                        <Typography color='text.primary' className='font-medium'>
-                          {row.name}
-                        </Typography>
-                        <Typography variant='body2'>{row.username}</Typography>
+                        <Typography>{row.name}</Typography>
                       </div>
                     </div>
                   </td>
+
                   <td className='!plb-1'>
                     <Typography>{row.email}</Typography>
                   </td>
-                  <td className='!plb-1'>
+
+                  <td className='!pb-1'>
                     <div className='flex gap-2'>
-                      <i className={classnames(row.roleIcon, row.iconClass, 'text-[22px]')} />
-                      <Typography color='text.primary'>{row.role}</Typography>
+                      {row.roles === 'SUPER_ADMIN' ? (
+                        <i
+                          className='ri-vip-crown-line'
+                          style={{
+                            color: '#f44336',
+                            border: '1px solid red',
+                            borderRadius: '50%'
+                          }}
+                        />
+                      ) : (
+                        <i
+                          className='ri-pie-chart-line'
+                          style={{
+                            color: '#4caf50',
+                            border: '1px solid green',
+                            borderRadius: '50%'
+                          }}
+                        />
+                      )}
+                      <Typography>{row.roles}</Typography>
                     </div>
                   </td>
+
                   <td className='!pb-1'>
                     <Chip
                       className='capitalize'
                       variant='tonal'
-                      color={row.status === 'pending' ? 'warning' : row.status === 'inactive' ? 'secondary' : 'success'}
+                      sx={{
+                        backgroundColor:
+                          row.status === 'inactive' ? '#f44336' : row.status === 'active' ? 'green' : '##66bb6a',
+                        color: 'white'
+                      }}
                       label={row.status}
                       size='small'
                     />
+                  </td>
+
+                  <td className='!plb-1'>
+                    <Typography>{row.mobile_no}</Typography>
+                  </td>
+                  <td className='!pb-1'>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        gap: 3
+                      }}
+                    >
+                      {<i className='ri-delete-bin-7-line' onClick={() => handleDeleteClick(row.id)} />}
+                      {<i className='ri-edit-line' onClick={() => handleEdit(row.id)} />}
+                    </Box>
                   </td>
                 </tr>
               ))}
@@ -300,6 +358,24 @@ const RoleSettingsPage = () => {
           </table>
         </div>
       </Card>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this textbook? Notes and bookmarks associated with textbook will also be
+            deleted. This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   )
 }

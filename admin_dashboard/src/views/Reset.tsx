@@ -7,16 +7,9 @@ import Link from 'next/link'
 import { Card, CardContent, IconButton, InputAdornment, TextField, Typography, Button } from '@mui/material'
 import type { FormEvent } from 'react'
 
-// Type Imports
-import type { Mode } from '@core/types'
-
 // Component Imports
 import Form from '@components/Form'
-import Illustrations from '@components/Illustrations'
 import Logo from '@components/layout/shared/Logo'
-
-// Hook Imports
-import { useImageVariant } from '@core/hooks/useImageVariant'
 
 // My Imports
 import React, { useState } from 'react'
@@ -26,14 +19,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const ResetPage = ({ mode }: { mode: Mode }) => {
-  // Vars
-  const darkImg = '/images/pages/auth-v1-mask-dark.png'
-  const lightImg = '/images/pages/auth-v1-mask-light.png'
-
-  // Hooks
-  const authBackground = useImageVariant(mode, lightImg, darkImg)
-
+const ResetPage = () => {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -68,7 +54,7 @@ const ResetPage = ({ mode }: { mode: Mode }) => {
     }
 
     try {
-      await axios.post(`http://localhost:3001/digital-textbook/admin/${id}/reset-password-by-email/${newPassword}`)
+      await axios.post(`http://localhost:3001/digital-textbook/admin/${id}/reset-password-byEmail/${newPassword}`)
       toast.success('Password updated successfully!')
       setTimeout(() => {
         router.push('/login')
@@ -144,7 +130,6 @@ const ResetPage = ({ mode }: { mode: Mode }) => {
           </div>
         </CardContent>
       </Card>
-      <Illustrations maskImg={{ src: authBackground }} />
     </div>
   )
 }

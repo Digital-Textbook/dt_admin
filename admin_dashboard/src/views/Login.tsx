@@ -59,8 +59,6 @@ const Login = ({ mode }: { mode: Mode }) => {
         localStorage.setItem('userData', JSON.stringify(response.data.existingAdmin))
         const storedUserData = localStorage.getItem('userData')
         const userData = storedUserData ? JSON.parse(storedUserData) : null
-
-        // console.log('User Data: ', userData)
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -72,7 +70,7 @@ const Login = ({ mode }: { mode: Mode }) => {
               toast.error('User already logged in on another device. Please try again!')
               break
             case 401:
-              toast.error('Invalid credentials!')
+              toast.error('Unauthorized admin. Please verify your account! OR reset your password!')
               break
             case 400:
               toast.error('Bad request. Please check your input.')

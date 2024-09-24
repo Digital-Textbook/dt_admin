@@ -134,6 +134,10 @@ const UserDropdown = () => {
                     <i className='ri-user-3-line' />
                     <Typography color='text.primary'>My Profile</Typography>
                   </MenuItem>
+                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, `/change-password?id=${user.id}`)}>
+                    <i className='ri-lock-password-line' />
+                    <Typography color='text.primary'>Change Password</Typography>
+                  </MenuItem>
 
                   <div className='flex items-center plb-2 pli-4'>
                     <Button

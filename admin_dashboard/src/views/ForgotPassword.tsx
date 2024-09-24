@@ -22,7 +22,7 @@ import Logo from '@components/layout/shared/Logo'
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
@@ -45,7 +45,6 @@ const ForgotPassword = ({ mode }: { mode: Mode }) => {
       const response = await axios.post(`http://localhost:3001/digital-textbook/admin/forgot-password/${email}`)
 
       const { admin } = response.data
-      console.log('Admin::', admin)
       if (admin && admin.id) {
         toast.success('OTP sent to your email!')
         setTimeout(() => {
