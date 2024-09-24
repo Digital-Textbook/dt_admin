@@ -8,15 +8,17 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 
 // MUI Imports
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import IconButton from '@mui/material/IconButton'
-import InputAdornment from '@mui/material/InputAdornment'
-import Checkbox from '@mui/material/Checkbox'
-import Button from '@mui/material/Button'
-import FormControlLabel from '@mui/material/FormControlLabel'
+import {
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography
+} from '@mui/material'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -47,7 +49,7 @@ const Login = ({ mode }: { mode: Mode }) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/auth/admin/login', { email, password })
+      const response = await axios.post('http://localhost:3001/digital-textbook/auth/admin/login', { email, password })
       if (response.status === 201 && response.data.adminAccessToken) {
         toast.success('Login successful!')
         setTimeout(() => {

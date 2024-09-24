@@ -37,7 +37,7 @@ const UpdateSubject = () => {
     const fetchClassData = async () => {
       try {
         const response: AxiosResponse<Classes[]> = await axios.get(
-          'http://localhost:3001/Digital-textbook/subject/class'
+          'http://localhost:3001/digital-textbook/subject/class'
         )
         setClassData(response.data)
       } catch (error) {
@@ -52,7 +52,7 @@ const UpdateSubject = () => {
   useEffect(() => {
     const fetchSubjectData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/Digital-textbook/subject/${id}`)
+        const response = await axios.get(`http://localhost:3001/digital-textbook/subject/${id}`)
         setSubjectdata(response.data)
         if (response.data) {
           setGrade(response.data.class)
@@ -73,7 +73,7 @@ const UpdateSubject = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/Digital-textbook/subject/${id}`, {
+      const response = await axios.patch(`http://localhost:3001/digital-textbook/subject/${id}`, {
         classId,
         subjectName
       })

@@ -1,61 +1,65 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
 
 import type { FormEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  TextField
+} from '@mui/material'
 import { useRouter } from 'next/navigation'
 
-interface Classes {
+interface dzongkhags {
   id: string
-  class: string
+  name: string
 }
 
-const AddSubject = () => {
-  const [subjectName, setSubjectName] = useState('')
-  const [grade, setGrade] = useState('')
-  const [classId, setClassId] = useState('')
-  const [classData, setClassData] = useState<Classes[]>([])
+const AddSchool = () => {
+  const [schoolName, setSchoolName] = useState('')
+  const [dzongkhagId, setDzongkhagId] = useState('')
+  const [dzongkhag, setDzongkhag] = useState('')
+  const [dzongkhagData, setDzongkhagData] = useState<dzongkhags[]>([])
   const router = useRouter()
 
   useEffect(() => {
-    const fetchClassData = async () => {
+    const fetchDzongkhagData = async () => {
       try {
-        const response: AxiosResponse<Classes[]> = await axios.get(
-          'http://localhost:3001/digital-textbook/subject/class'
+        const response: AxiosResponse<dzongkhags[]> = await axios.get(
+          'http://localhost:3001/digital-textbook/common/dzongkhag'
         )
-        setClassData(response.data)
+        setDzongkhagData(response.data)
       } catch (error) {
-        console.error('Error classes from database!', error)
-        toast.error('Error while fetching classes from database!')
+        console.error('Error dzongkhag data from database!', error)
+        toast.error('Error while fetching dzongkhag data from database!')
       }
     }
 
-    fetchClassData()
+    fetchDzongkhagData()
   }, [])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/digital-textbook/subject', { classId, subjectName })
-      toast.success('Textbook uploaded successfully!')
+      const response = await axios.post('http://localhost:3001/digital-textbook/school', { dzongkhagId, schoolName })
+      toast.success('School uploaded successfully!')
       setTimeout(() => {
-        router.push('/subject')
+        router.push('/school')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading textbook. Please try again!')
-      console.error('Error uploading textbook:', error)
+      toast.error('Error while uploading school. Please try again!')
+      console.error('Error uploading school:', error)
     }
   }
 
@@ -64,26 +68,26 @@ const AddSubject = () => {
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Add Subject' />
+          <CardHeader title='Add School' />
           <Divider />
         </Grid>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='class'>Class</InputLabel>
+                <InputLabel htmlFor='dzongkhag'>Dzongkhag</InputLabel>
                 <TextField
                   select
                   fullWidth
-                  id='class'
-                  name='class'
-                  value={grade}
+                  id='dzongkhag'
+                  name='dzongkhag'
+                  value={dzongkhag}
                   required
                   onChange={e => {
-                    const selectedClass = classData.find(cls => cls.class === e.target.value)
-                    if (selectedClass) {
-                      setGrade(e.target.value)
-                      setClassId(selectedClass.id)
+                    const selectedDzongkhag = dzongkhagData.find(dzo => dzo.name === e.target.value)
+                    if (selectedDzongkhag) {
+                      setDzongkhag(e.target.value)
+                      setDzongkhagId(selectedDzongkhag.id)
                     }
                   }}
                   InputProps={{
@@ -94,23 +98,23 @@ const AddSubject = () => {
                     )
                   }}
                 >
-                  {classData.map(cls => (
-                    <MenuItem key={cls.id} value={cls.class}>
-                      {cls.class}
+                  {dzongkhagData.map(dzo => (
+                    <MenuItem key={dzo.id} value={dzo.name}>
+                      {dzo.name}
                     </MenuItem>
                   ))}
                 </TextField>
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='chapter'>Subject</InputLabel>
+                <InputLabel htmlFor='schoolName'>School</InputLabel>
                 <TextField
                   fullWidth
-                  id='subjectName'
-                  name='subjectName'
-                  value={subjectName}
+                  id='schoolName'
+                  name='schoolName'
+                  value={schoolName}
                   required
-                  onChange={e => setSubjectName(e.target.value)}
+                  onChange={e => setSchoolName(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
@@ -137,4 +141,4 @@ const AddSubject = () => {
   )
 }
 
-export default AddSubject
+export default AddSchool

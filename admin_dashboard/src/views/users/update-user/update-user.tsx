@@ -41,7 +41,7 @@ const UpdateUser = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/Digital-textbook/user/${id}`)
+        const response = await axios.get(`http://localhost:3001/digital-textbook/user/${id}`)
         setUser(response.data)
         if (response.data) {
           setName(response.data.name)
@@ -61,13 +61,11 @@ const UpdateUser = () => {
     }
   }, [id])
 
-  console.log('User Data:::', user)
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/Digital-textbook/user/${id}`, {
+      const response = await axios.patch(`http://localhost:3001/digital-textbook/user/${id}`, {
         name,
         cidNo,
         mobileNo,

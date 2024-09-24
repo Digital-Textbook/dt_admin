@@ -12,8 +12,7 @@ import '@assets/iconify-icons/generated-icons.css'
 
 export const metadata = {
   title: 'Digital Textbook',
-  description:
-    'Develop next-level web apps with Materio Dashboard Free - NextJS. Now, updated with lightning-fast routing powered by MUI and App router.'
+  description: 'Developed By Rom Tech'
 }
 
 const RootLayout = ({ children }: ChildrenType) => {

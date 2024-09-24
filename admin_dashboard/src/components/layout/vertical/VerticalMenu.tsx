@@ -99,18 +99,21 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
           </MenuItem>
         </MenuSection>
         <MenuSection label='App & Pages'>
-          <SubMenu label='Roles & Permission' icon={<i className='ri-lock-star-fill' />}>
+          <SubMenu label='Roles & Permission' icon={<i className='ri-lock-star-line' />}>
             <MenuItem href='/roles'>Roles</MenuItem>
             <MenuItem href='/permission'>Permission</MenuItem>
           </SubMenu>
-          <MenuItem href='/textbook' icon={<i className='ri-book-2-fill' />}>
+          <MenuItem href='/textbook' icon={<i className='ri-book-2-line' />}>
             Textbook
           </MenuItem>
-          <MenuItem href='/user' icon={<i className='ri-user-fill' />}>
+          <MenuItem href='/user' icon={<i className='ri-user-line' />}>
             Users
           </MenuItem>
-          <MenuItem href='/subject' icon={<i className='ri-git-repository-fill' />}>
+          <MenuItem href='/subject' icon={<i className='ri-git-repository-line' />}>
             Subject
+          </MenuItem>
+          <MenuItem href='/school' icon={<i className='ri-graduation-cap-line' />}>
+            School
           </MenuItem>
         </MenuSection>
       </Menu>

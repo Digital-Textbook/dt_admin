@@ -49,7 +49,7 @@ const UpdateTextbook = () => {
   useEffect(() => {
     const fetchClassData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/Digital-textbook/common/subject')
+        const response = await axios.get('http://localhost:3001/digital-textbook/common/subject')
         setClassData(response.data)
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -64,7 +64,7 @@ const UpdateTextbook = () => {
   useEffect(() => {
     const fetchTextbookData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/Digital-textbook/textbook/${id}/textbook-details`)
+        const response = await axios.get(`http://localhost:3001/digital-textbook/textbook/${id}/textbook-details`)
         setTextbook(response.data)
         if (response.data) {
           setAuthor(response.data.author)
@@ -126,7 +126,7 @@ const UpdateTextbook = () => {
     }
 
     try {
-      const response = await axios.patch(`http://localhost:3001/Digital-textbook/textbook/${id}`, formData, {
+      const response = await axios.patch(`http://localhost:3001/digital-textbook/textbook/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

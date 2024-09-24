@@ -14,56 +14,47 @@ import {
   Divider,
   IconButton
 } from '@mui/material'
-import Link from 'next/link'
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
+import Link from 'next/link'
 
 // Imports
 import React, { useState, useEffect } from 'react'
 import axios, { AxiosResponse } from 'axios'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 
-type TableBodyRowType = {
+type schools = {
   id: string
-  author: string
-  subjectName: string
-  class: string
-  chapter: string
-  totalPages: string
-  summary: string
-  edition: string
-  coverUrl?: string
-  textbookUrl?: string
+  name: string
+  dzongkhag: string
 }
 
-const TextbookPage = () => {
-  const [textbookData, setTextbookData] = useState<TableBodyRowType[]>([])
+const SchoolPage = () => {
   const router = useRouter()
+  const [schoolData, setSchoolData] = useState<schools[]>([])
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchTextbookData = async () => {
+    const fetchSchoolData = async () => {
       try {
-        const response: AxiosResponse<TableBodyRowType[]> = await axios.get(
-          'http://localhost:3001/digital-textbook/textbook'
-        )
-        setTextbookData(response.data)
+        const response: AxiosResponse<schools[]> = await axios.get('http://localhost:3001/digital-textbook/school')
+        setSchoolData(response.data)
       } catch (err) {
-        console.error('Error fetching textbook data:', err)
-        toast.error('Error while fetching textbook!')
+        console.error('Error fetching school data:', err)
+        toast.error('Error while fetching school!')
       }
     }
 
-    fetchTextbookData()
+    fetchSchoolData()
   }, [])
 
   const handleEdit = (id: string) => {
-    router.push(`/textbook/update?id=${id}`)
+    router.push(`/school/update?id=${id}`)
   }
 
   const handleDeleteClick = (id: string) => {
@@ -74,11 +65,13 @@ const TextbookPage = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/textbook/${selectedId}`)
-        setTextbookData(prevData => prevData.filter(item => item.id !== selectedId))
-        toast.success('Textbook and associated bookmarks and notes deleted successfully!')
+        await axios.delete(`http://localhost:3001/digital-textbook/school/${selectedId}`)
+        toast.success('School deleted successfully!')
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
       } catch (error) {
-        toast.error('Error while deleting textbook!')
+        toast.error('Error while deleting School!')
       } finally {
         setOpenDeleteDialog(false)
         setSelectedId(null)
@@ -90,7 +83,6 @@ const TextbookPage = () => {
     setOpenDeleteDialog(false)
     setSelectedId(null)
   }
-
   return (
     <>
       <ToastContainer />
@@ -112,7 +104,7 @@ const TextbookPage = () => {
               gap: 2
             }}
           >
-            <Typography variant='h4'>Textbook</Typography>
+            <Typography variant='h4'>School</Typography>
             <div className='flex items-center cursor-pointer gap-2' style={{ flexGrow: 1 }}>
               <IconButton className='text-textPrimary'>
                 <i className='ri-search-line' />
@@ -120,7 +112,7 @@ const TextbookPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='textbook/add' passHref>
+          <Link href='school/add' passHref>
             <Button
               variant='contained'
               sx={{
@@ -142,75 +134,19 @@ const TextbookPage = () => {
           <table className={tableStyles.table}>
             <thead>
               <tr>
-                <th>Author</th>
                 <th>Subject</th>
                 <th>Class</th>
-                <th>Chapter</th>
-                <th>Pages</th>
-                <th>Summary</th>
-                <th>Edition</th>
-                {/* <th>Cover</th> */}
-                <th>Textbook</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {textbookData.map((row, index) => (
+              {schoolData.map((row, index) => (
                 <tr key={index}>
                   <td className='!plb-1'>
-                    <Typography>{row.author}</Typography>
+                    <Typography>{row.name}</Typography>
                   </td>
                   <td className='!plb-1'>
-                    <Typography>{row.subjectName}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography sx={{ textAlign: 'center' }}>{row.class}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography sx={{ textAlign: 'center' }}>{row.chapter}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography sx={{ textAlign: 'center' }}> {row.totalPages || 'N/A'}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography>{row.summary}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography>{row.edition}</Typography>
-                  </td>
-                  {/* <td className='!plb-1'>
-                    {row.coverUrl ? (
-                      <img
-                        src={row.coverUrl}
-                        alt='Cover Image'
-                        width='100'
-                        height='80'
-                        style={{ objectFit: 'cover' }}
-                      />
-                    ) : (
-                      'No Cover'
-                    )}
-                  </td> */}
-                  <td className='!plb-1'>
-                    {row.textbookUrl ? (
-                      <>
-                        {row.textbookUrl.endsWith('.pdf') ? (
-                          <Grid sx={{ flexDirection: 'row', display: 'flex' }}>
-                            <i className='ri-file-pdf-2-fill' />
-                            <Typography>PDF</Typography>
-                          </Grid>
-                        ) : row.textbookUrl.endsWith('.epub') ? (
-                          <Grid sx={{ flexDirection: 'row', display: 'flex' }}>
-                            <i className='ri-article-line' />
-                            <Typography>EPUB</Typography>
-                          </Grid>
-                        ) : (
-                          <iframe src={row.textbookUrl} width='100' height='80' style={{ border: 'none' }} />
-                        )}
-                      </>
-                    ) : (
-                      'No Textbook'
-                    )}
+                    <Typography>{row.dzongkhag}</Typography>
                   </td>
 
                   <td className='!plb-1'>
@@ -260,8 +196,7 @@ const TextbookPage = () => {
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this textbook? Notes and bookmarks associated with textbook will also be
-            deleted. This action cannot be undone.
+            Are you sure you want to delete this school? This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -277,4 +212,4 @@ const TextbookPage = () => {
   )
 }
 
-export default TextbookPage
+export default SchoolPage

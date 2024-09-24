@@ -51,7 +51,7 @@ const OtpPage = ({ mode }: { mode: Mode }) => {
     }
 
     try {
-      await axios.post(`http://localhost:3001/admin/${id}/reset-password/${otp}`)
+      await axios.post(`http://localhost:3001/digital-textbook/admin/${id}/reset-password/${otp}`)
       toast.success('OTP verified successfully!')
       setTimeout(() => {
         router.push(`/reset-password?id=${id}`)

@@ -44,10 +44,10 @@ const UserTable = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response: AxiosResponse<UserData[]> = await axios.get('http://localhost:3001/Digital-textbook/user')
+        const response: AxiosResponse<UserData[]> = await axios.get('http://localhost:3001/digital-textbook/user')
         setUserData(response.data)
       } catch (error) {
-        console.log('Error fetching user data!: ', error)
+        console.log('Error fetching user data!:', error)
         toast.error('Error while fetching textbook!')
       }
     }
@@ -66,7 +66,7 @@ const UserTable = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/Digital-textbook/user/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/user/${selectedId}`)
         setUserData(prevData => prevData.filter(item => item.id !== selectedId))
         toast.success('User and associated data deleted successfully!')
       } catch (error) {

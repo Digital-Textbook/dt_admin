@@ -42,10 +42,10 @@ const ForgotPassword = ({ mode }: { mode: Mode }) => {
 
   const handleSendOtp = async () => {
     try {
-      const response = await axios.post(`http://localhost:3001/admin/forgot-password/${email}`)
+      const response = await axios.post(`http://localhost:3001/digital-textbook/admin/forgot-password/${email}`)
 
       const { admin } = response.data
-
+      console.log('Admin::', admin)
       if (admin && admin.id) {
         toast.success('OTP sent to your email!')
         setTimeout(() => {

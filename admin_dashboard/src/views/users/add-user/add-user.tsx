@@ -29,7 +29,7 @@ const AddUser = () => {
     e.preventDefault()
 
     try {
-      await axios.post('http://localhost:3001/Digital-textbook/user/register', {
+      await axios.post('http://localhost:3001/digital-textbook/user/register', {
         name,
         cidNo,
         mobileNo,

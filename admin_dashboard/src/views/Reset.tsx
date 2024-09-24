@@ -4,13 +4,7 @@
 import Link from 'next/link'
 
 // MUI Imports
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import InputAdornment from '@mui/material/InputAdornment'
+import { Card, CardContent, IconButton, InputAdornment, TextField, Typography, Button } from '@mui/material'
 import type { FormEvent } from 'react'
 
 // Type Imports
@@ -74,7 +68,7 @@ const ResetPage = ({ mode }: { mode: Mode }) => {
     }
 
     try {
-      await axios.post(`http://localhost:3001/admin/${id}/reset-password-byEmail/${newPassword}`)
+      await axios.post(`http://localhost:3001/digital-textbook/admin/${id}/reset-password-by-email/${newPassword}`)
       toast.success('Password updated successfully!')
       setTimeout(() => {
         router.push('/login')
@@ -100,7 +94,7 @@ const ResetPage = ({ mode }: { mode: Mode }) => {
               <TextField
                 fullWidth
                 label='New Password'
-                id='outlined-adornment-password'
+                id='newPassword'
                 type={showPassword ? 'text' : 'password'}
                 value={newPassword}
                 required
@@ -123,7 +117,7 @@ const ResetPage = ({ mode }: { mode: Mode }) => {
               <TextField
                 fullWidth
                 label='Confirm Password'
-                id='outlined-adornment-password'
+                id='confirmPassword'
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 required

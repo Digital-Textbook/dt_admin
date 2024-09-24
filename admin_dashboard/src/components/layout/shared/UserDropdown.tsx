@@ -72,7 +72,7 @@ const UserDropdown = () => {
       localStorage.removeItem('adminAccessToken')
       localStorage.removeItem('userData')
 
-      await axios.post(`http://localhost:3001/auth/${user.id}/admin-logout`)
+      await axios.post(`http://localhost:3001/digital-textbook/auth/${user.id}/admin-logout`)
       setUser(null)
       toast.success('Logout successful!')
 

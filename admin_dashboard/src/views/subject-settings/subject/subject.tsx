@@ -43,7 +43,7 @@ const SubjectPage = () => {
   useEffect(() => {
     const fetchSubjectData = async () => {
       try {
-        const response: AxiosResponse<subjects[]> = await axios.get('http://localhost:3001/Digital-textbook/subject')
+        const response: AxiosResponse<subjects[]> = await axios.get('http://localhost:3001/digital-textbook/subject')
         setsubjectData(response.data)
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -66,7 +66,7 @@ const SubjectPage = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/Digital-textbook/subject/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/subject/${selectedId}`)
         toast.success('Subject deleted successfully!')
         setTimeout(() => {
           window.location.reload()
@@ -113,7 +113,7 @@ const SubjectPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='subject/add' passHref>
+          <Link href='school/add' passHref>
             <Button
               variant='contained'
               sx={{
