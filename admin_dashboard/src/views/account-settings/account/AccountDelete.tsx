@@ -26,7 +26,6 @@ const AccountDelete = () => {
     setUser(userData)
   }, [])
 
-  console.log('USER DATA:::', user)
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -46,7 +45,6 @@ const AccountDelete = () => {
       console.error('Error while deactivating admin:', error)
     }
   }
-  console.log('User id::', id)
   return (
     <>
       <ToastContainer />

@@ -54,7 +54,7 @@ const ResetPage = () => {
     }
 
     try {
-      await axios.post(`http://localhost:3001/digital-textbook/admin/${id}/reset-password-byEmail/${newPassword}`)
+      await axios.post(`http://localhost:3001/digital-textbook/admin/${id}/reset-password-by-email/${newPassword}`)
       toast.success('Password updated successfully!')
       setTimeout(() => {
         router.push('/login')

@@ -1,165 +1,146 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
-import type { ChangeEvent } from 'react'
+import { useEffect, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 
 // MUI Imports
-import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import Chip from '@mui/material/Chip'
-import type { SelectChangeEvent } from '@mui/material/Select'
+import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material'
+import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-type Data = {
-  firstName: string
-  lastName: string
+type admin = {
+  id: string
+  name: string
   email: string
-  organization: string
-  phoneNumber: number | string
-  address: string
-  state: string
-  zipCode: string
-  country: string
-  language: string
-  timezone: string
-  currency: string
+  mobile_no: string
+  status: string
 }
-
-// Vars
-const initialData: Data = {
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'john.doe@example.com',
-  organization: 'ThemeSelection',
-  phoneNumber: '+1 (917) 543-9876',
-  address: '123 Main St, New York, NY 10001',
-  state: 'New York',
-  zipCode: '634880',
-  country: 'usa',
-  language: 'arabic',
-  timezone: 'gmt-12',
-  currency: 'usd'
-}
-
-const languageData = ['English', 'Arabic', 'French', 'German', 'Portuguese']
 
 const AccountDetails = () => {
-  // States
-  const [formData, setFormData] = useState<Data>(initialData)
-  const [fileInput, setFileInput] = useState<string>('')
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
-  const [language, setLanguage] = useState<string[]>(['English'])
+  const [user, setUser] = useState<admin[]>([])
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [mobile_no, setMobile_no] = useState('')
+  const [roles, setRoles] = useState('')
+  const [status, setStatus] = useState('')
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
+  const router = useRouter()
 
-  const handleDelete = (value: string) => {
-    setLanguage(current => current.filter(item => item !== value))
-  }
-
-  const handleChange = (event: SelectChangeEvent<string[]>) => {
-    setLanguage(event.target.value as string[])
-  }
-
-  const handleFormChange = (field: keyof Data, value: Data[keyof Data]) => {
-    setFormData({ ...formData, [field]: value })
-  }
-
-  const handleFileInputChange = (file: ChangeEvent) => {
-    const reader = new FileReader()
-    const { files } = file.target as HTMLInputElement
-
-    if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result as string)
-      reader.readAsDataURL(files[0])
-
-      if (reader.result !== null) {
-        setFileInput(reader.result as string)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/digital-textbook/admin/${id}`)
+        setUser(response.data)
+        if (response.data) {
+          setName(response.data.name)
+          setEmail(response.data.email)
+          setMobile_no(response.data.mobile_no)
+          setRoles(response.data.roles)
+          setStatus(response.data.status)
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err)
+        toast.error('Error while fetching user!')
       }
     }
-  }
 
-  const handleFileInputReset = () => {
-    setFileInput('')
-    setImgSrc('/images/avatars/1.png')
+    if (id) {
+      fetchUserData()
+    }
+  }, [id])
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    try {
+      const response = await axios.patch(`http://localhost:3001/digital-textbook/admin/${id}`, {
+        name,
+        email,
+        mobile_no,
+        roles,
+        status
+      })
+      toast.success('Admin profile updated successfully!')
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000)
+    } catch (error) {
+      toast.error('Error while updating admin profile. Please try again!')
+      console.error('Error while updating admin profile:', error)
+    }
   }
 
   return (
     <Card>
+      <ToastContainer />
       <CardContent className='mbe-5'>
         <div className='flex max-sm:flex-col items-center gap-6'>
-          <img height={100} width={100} className='rounded' src={imgSrc} alt='Profile' />
-          <div className='flex flex-grow flex-col gap-4'>
-            <div className='flex flex-col sm:flex-row gap-4'>
-              <Button component='label' size='small' variant='contained' htmlFor='account-settings-upload-image'>
-                Upload New Photo
-                <input
-                  hidden
-                  type='file'
-                  value={fileInput}
-                  accept='image/png, image/jpeg'
-                  onChange={handleFileInputChange}
-                  id='account-settings-upload-image'
-                />
-              </Button>
-              <Button size='small' variant='outlined' color='error' onClick={handleFileInputReset}>
-                Reset
-              </Button>
+          <div className='flex items-center gap-3'>
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #b388ff, #5e35b1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 24
+              }}
+            >
+              {name.charAt(0).toUpperCase()}
             </div>
-            <Typography>Allowed JPG, GIF or PNG. Max size of 800K</Typography>
+            <div className='flex flex-col'>
+              <Typography fontSize={24}>{name}</Typography>
+            </div>
           </div>
         </div>
       </CardContent>
       <CardContent>
-        <form onSubmit={e => e.preventDefault()}>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Name'
-                value={formData.firstName}
+                value={name}
                 placeholder='John'
-                onChange={e => handleFormChange('firstName', e.target.value)}
+                onChange={e => setName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Mobile No.'
-                value={formData.lastName}
+                value={mobile_no}
                 placeholder=''
-                onChange={e => handleFormChange('lastName', e.target.value)}
+                onChange={e => setMobile_no(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Email'
-                value={formData.email}
+                value={email}
                 placeholder='john.doe@gmail.com'
-                onChange={e => handleFormChange('email', e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='Role'
-                value={formData.organization}
-                placeholder='ThemeSelection'
-                onChange={e => handleFormChange('organization', e.target.value)}
-              />
+              <TextField fullWidth label='Role' value={roles} disabled />
             </Grid>
 
             <Grid item xs={12} className='flex gap-4 flex-wrap'>
               <Button variant='contained' type='submit'>
-                Save Changes
+                Save
               </Button>
-              <Button variant='outlined' type='reset' color='secondary' onClick={() => setFormData(initialData)}>
+              <Button variant='contained' type='reset' color='error'>
                 Reset
               </Button>
             </Grid>
