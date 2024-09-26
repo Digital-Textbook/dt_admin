@@ -50,7 +50,7 @@ const TextbookPage = () => {
     const fetchTextbookData = async () => {
       try {
         const response: AxiosResponse<TableBodyRowType[]> = await axios.get(
-          'http://localhost:3001/digital-textbook/textbook'
+          'http://localhost:3001/digital-textbook/textbook/all'
         )
         setTextbookData(response.data)
       } catch (err) {
@@ -75,7 +75,7 @@ const TextbookPage = () => {
     if (selectedId) {
       try {
         await axios.delete(`http://localhost:3001/digital-textbook/textbook/${selectedId}`)
-        // setTextbookData(prevData => prevData.filter(item => item.id !== selectedId))
+        setTextbookData(prevData => prevData.filter(item => item.id !== selectedId))
         setTimeout(() => {
           window.location.reload()
         }, 3000)

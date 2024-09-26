@@ -64,7 +64,7 @@ const UpdateTextbook = () => {
   useEffect(() => {
     const fetchTextbookData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/digital-textbook/textbook/${id}/textbook-details`)
+        const response = await axios.get(`http://localhost:3001/digital-textbook/textbook/${id}/textbook-info`)
         setTextbook(response.data)
         if (response.data) {
           setAuthor(response.data.author)

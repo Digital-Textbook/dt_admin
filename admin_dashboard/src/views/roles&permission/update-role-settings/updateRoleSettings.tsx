@@ -33,7 +33,8 @@ type role = {
 const UpdateRoleSettings = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [roles, setRoles] = useState('')
+  const [role, setRole] = useState('')
+  const [roleId, setRoleId] = useState('')
   const [status, setStatus] = useState('')
   const [mobileNo, setMobileNo] = useState('')
 
@@ -58,8 +59,6 @@ const UpdateRoleSettings = () => {
     fetchRoleData()
   }, [])
 
-  console.log('Role Data::', roleData)
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -68,7 +67,7 @@ const UpdateRoleSettings = () => {
         if (response.data) {
           setName(response.data.name)
           setEmail(response.data.email)
-          setRoles(response.data.role.role)
+          setRole(response.data.role.role)
           setStatus(response.data.status)
           setMobileNo(response.data.mobileNo)
         }
@@ -90,7 +89,7 @@ const UpdateRoleSettings = () => {
       const response = await axios.patch(`http://localhost:3001/digital-textbook/admin/${id}`, {
         name,
         email,
-        roles,
+        roleId,
         status,
         mobileNo
       })
@@ -155,15 +154,21 @@ const UpdateRoleSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='roles'>Role</InputLabel>
+                <InputLabel htmlFor='role'>Role</InputLabel>
                 <TextField
                   select
                   fullWidth
-                  id='roles'
-                  name='roles'
-                  value={roles}
+                  id='role'
+                  name='role'
+                  value={role}
                   required
-                  onChange={e => setRoles(e.target.value)}
+                  onChange={e => {
+                    const selectedRole = roleData.find(rls => rls.role === e.target.value)
+                    if (selectedRole) {
+                      setRole(e.target.value)
+                      setRoleId(selectedRole.id)
+                    }
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
@@ -173,7 +178,7 @@ const UpdateRoleSettings = () => {
                   }}
                 >
                   {roleData.map(role => (
-                    <MenuItem key={role.id} value={role.id}>
+                    <MenuItem key={role.id} value={role.role}>
                       {role.role}
                     </MenuItem>
                   ))}

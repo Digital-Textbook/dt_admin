@@ -30,17 +30,22 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-type admin = {
+type AdminRole = {
+  id: string
+  role: string
+}
+
+type Admin = {
   id: string
   name: string
   email: string
-  roles: string
-  status: string
   mobileNo: string
+  status: string
+  role: AdminRole
 }
 
 const RoleSettingsPage = () => {
-  const [adminData, setAdminData] = useState<admin[]>([])
+  const [adminData, setAdminData] = useState<Admin[]>([])
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -50,7 +55,7 @@ const RoleSettingsPage = () => {
   useEffect(() => {
     const fetchadminData = async () => {
       try {
-        const response: AxiosResponse<admin[]> = await axios.get('http://localhost:3001/digital-textbook/admin')
+        const response: AxiosResponse<Admin[]> = await axios.get('http://localhost:3001/digital-textbook/admin')
         setAdminData(response.data)
       } catch (err) {
         console.error('Error fetching admin data:', err)
@@ -60,8 +65,6 @@ const RoleSettingsPage = () => {
 
     fetchadminData()
   }, [])
-
-  console.log('Admin Data::', adminData)
 
   const handleEdit = (id: string) => {
     router.push(`/roles/update?id=${id}`)
@@ -272,90 +275,98 @@ const RoleSettingsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {adminData.map((row, index) => (
-                <tr key={index}>
-                  <td className='!plb-1'>
-                    <div className='flex items-center gap-3'>
-                      <div
-                        style={{
-                          width: 34,
-                          height: 34,
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #b388ff, #5e35b1)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        {row.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div className='flex flex-col'>
-                        <Typography>{row.name}</Typography>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td className='!plb-1'>
-                    <Typography>{row.email}</Typography>
-                  </td>
-
-                  <td className='!pb-1'>
-                    <div className='flex gap-2'>
-                      {row.roles === 'SUPER_ADMIN' ? (
-                        <i
-                          className='ri-vip-crown-line'
-                          style={{
-                            color: '#f44336',
-                            border: '1px solid red',
-                            borderRadius: '50%'
-                          }}
-                        />
-                      ) : (
-                        <i
-                          className='ri-pie-chart-line'
-                          style={{
-                            color: '#4caf50',
-                            border: '1px solid green',
-                            borderRadius: '50%'
-                          }}
-                        />
-                      )}
-                      <Typography>{row.roles}</Typography>
-                    </div>
-                  </td>
-
-                  <td className='!pb-1'>
-                    <Chip
-                      className='capitalize'
-                      variant='tonal'
-                      sx={{
-                        backgroundColor:
-                          row.status === 'inactive' ? '#f44336' : row.status === 'active' ? 'green' : '##66bb6a',
-                        color: 'white'
-                      }}
-                      label={row.status}
-                      size='small'
-                    />
-                  </td>
-
-                  <td className='!plb-1'>
-                    <Typography>{row.mobileNo}</Typography>
-                  </td>
-                  <td className='!pb-1'>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        gap: 3
-                      }}
-                    >
-                      {<i className='ri-delete-bin-7-line' onClick={() => handleDeleteClick(row.id)} />}
-                      {<i className='ri-edit-line' onClick={() => handleEdit(row.id)} />}
-                    </Box>
+              {adminData.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center' }}>
+                    <Typography>No data in database</Typography>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                adminData.map((row, index) => (
+                  <tr key={index}>
+                    <td className='!plb-1'>
+                      <div className='flex items-center gap-3'>
+                        <div
+                          style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #b388ff, #5e35b1)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          {row.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className='flex flex-col'>
+                          <Typography>{row.name}</Typography>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className='!plb-1'>
+                      <Typography>{row.email}</Typography>
+                    </td>
+
+                    <td className='!pb-1'>
+                      <div className='flex gap-2'>
+                        {row.role.role === 'SUPER_ADMIN' ? (
+                          <i
+                            className='ri-vip-crown-line'
+                            style={{
+                              color: '#f44336',
+                              border: '1px solid red',
+                              borderRadius: '50%'
+                            }}
+                          />
+                        ) : (
+                          <i
+                            className='ri-pie-chart-line'
+                            style={{
+                              color: '#4caf50',
+                              border: '1px solid green',
+                              borderRadius: '50%'
+                            }}
+                          />
+                        )}
+                        <Typography>{row.role.role}</Typography>
+                      </div>
+                    </td>
+
+                    <td className='!pb-1'>
+                      <Chip
+                        className='capitalize'
+                        variant='tonal'
+                        sx={{
+                          backgroundColor:
+                            row.status === 'inactive' ? '#f44336' : row.status === 'active' ? 'green' : '##66bb6a',
+                          color: 'white'
+                        }}
+                        label={row.status}
+                        size='small'
+                      />
+                    </td>
+
+                    <td className='!plb-1'>
+                      <Typography>{row.mobileNo}</Typography>
+                    </td>
+                    <td className='!pb-1'>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          gap: 3
+                        }}
+                      >
+                        {<i className='ri-delete-bin-7-line' onClick={() => handleDeleteClick(row.id)} />}
+                        {<i className='ri-edit-line' onClick={() => handleEdit(row.id)} />}
+                      </Box>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
