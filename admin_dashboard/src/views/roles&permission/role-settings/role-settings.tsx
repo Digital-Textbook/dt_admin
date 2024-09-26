@@ -36,7 +36,7 @@ type admin = {
   email: string
   roles: string
   status: string
-  mobile_no: string
+  mobileNo: string
 }
 
 const RoleSettingsPage = () => {
@@ -60,6 +60,8 @@ const RoleSettingsPage = () => {
 
     fetchadminData()
   }, [])
+
+  console.log('Admin Data::', adminData)
 
   const handleEdit = (id: string) => {
     router.push(`/roles/update?id=${id}`)
@@ -339,7 +341,7 @@ const RoleSettingsPage = () => {
                   </td>
 
                   <td className='!plb-1'>
-                    <Typography>{row.mobile_no}</Typography>
+                    <Typography>{row.mobileNo}</Typography>
                   </td>
                   <td className='!pb-1'>
                     <Box

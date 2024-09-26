@@ -11,7 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 import { Divider, InputLabel, MenuItem } from '@mui/material'
 import type { FormEvent } from 'react'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -22,94 +22,51 @@ type admin = {
   email: string
   roles: string
   status: string
-  mobileNo: string
+  mobile_no: string
 }
 
-type role = {
-  id: string
-  role: string
-}
-
-const UpdateRoleSettings = () => {
+const AddRoleSettings = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [roles, setRoles] = useState('')
   const [status, setStatus] = useState('')
-  const [mobileNo, setMobileNo] = useState('')
+  const [mobile_no, setMobile_no] = useState('')
 
   const router = useRouter()
-
-  const [user, setUser] = useState<admin[]>([])
-  const [roleData, setRoleData] = useState<role[]>([])
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id')
-
-  useEffect(() => {
-    const fetchRoleData = async () => {
-      try {
-        const response: AxiosResponse<role[]> = await axios.get('http://localhost:3001/digital-textbook/role')
-        setRoleData(response.data)
-      } catch (err) {
-        console.error('Error fetching role data:', err)
-        toast.error('Error while fetching role data!')
-      }
-    }
-
-    fetchRoleData()
-  }, [])
-
-  console.log('Role Data::', roleData)
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3001/digital-textbook/admin/${id}`)
-        setUser(response.data)
-        if (response.data) {
-          setName(response.data.name)
-          setEmail(response.data.email)
-          setRoles(response.data.role.role)
-          setStatus(response.data.status)
-          setMobileNo(response.data.mobileNo)
-        }
-      } catch (err) {
-        console.error('Error fetching user data:', err)
-        toast.error('Error while fetching user!')
-      }
-    }
-
-    if (id) {
-      fetchUserData()
-    }
-  }, [id])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/admin/${id}`, {
+      const response = await axios.patch('http://localhost:3001/digital-textbook/admin/register', {
         name,
         email,
         roles,
         status,
-        mobileNo
+        mobile_no
       })
-      toast.success('Admin updated successfully!')
+      toast.success('Admin added successfully!')
       setTimeout(() => {
         router.push('/roles')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading admin. Please try again!')
-      console.error('Error while updating admin:', error)
+      toast.error('Error while adding admin. Please try again!')
+      console.error('Error while adding admin:', error)
     }
   }
+
+  console.log('Name::', name)
+  console.log('Email::', email)
+  console.log('Roles::', roles)
+  console.log('status::', status)
+  console.log('mobile_no::', mobile_no)
 
   return (
     <>
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Update Admin' />
+          <CardHeader title='Create Admin' />
           <Divider />
         </Grid>
         <CardContent>
@@ -172,11 +129,8 @@ const UpdateRoleSettings = () => {
                     )
                   }}
                 >
-                  {roleData.map(role => (
-                    <MenuItem key={role.id} value={role.id}>
-                      {role.role}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value='ADMIN'>ADMIN</MenuItem>
+                  <MenuItem value='SUPER_ADMIN'>SUPER ADMIN</MenuItem>
                 </TextField>
               </Grid>
 
@@ -204,15 +158,15 @@ const UpdateRoleSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='mobileNo'>Mobile No.</InputLabel>
+                <InputLabel htmlFor='mobile_no'>Mobile No.</InputLabel>
                 <TextField
                   fullWidth
-                  id='mobileNo'
-                  name='mobileNo'
+                  id='mobile_no'
+                  name='mobile_no'
                   placeholder=''
-                  value={mobileNo}
+                  value={mobile_no}
                   required
-                  onChange={e => setMobileNo(e.target.value)}
+                  onChange={e => setMobile_no(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
@@ -239,4 +193,4 @@ const UpdateRoleSettings = () => {
   )
 }
 
-export default UpdateRoleSettings
+export default AddRoleSettings

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 
 // MUI Imports
-import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid, InputAdornment, TextField, Typography } from '@mui/material'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -15,7 +15,7 @@ type admin = {
   id: string
   name: string
   email: string
-  mobile_no: string
+  mobileNo: string
   status: string
 }
 
@@ -23,7 +23,7 @@ const AccountDetails = () => {
   const [user, setUser] = useState<admin[]>([])
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [mobile_no, setMobile_no] = useState('')
+  const [mobileNo, setMobileNo] = useState('')
   const [roles, setRoles] = useState('')
   const [status, setStatus] = useState('')
   const searchParams = useSearchParams()
@@ -38,8 +38,8 @@ const AccountDetails = () => {
         if (response.data) {
           setName(response.data.name)
           setEmail(response.data.email)
-          setMobile_no(response.data.mobile_no)
-          setRoles(response.data.roles)
+          setMobileNo(response.data.mobileNo)
+          setRoles(response.data.role.role)
           setStatus(response.data.status)
         }
       } catch (err) {
@@ -60,7 +60,7 @@ const AccountDetails = () => {
       const response = await axios.patch(`http://localhost:3001/digital-textbook/admin/${id}`, {
         name,
         email,
-        mobile_no,
+        mobileNo,
         roles,
         status
       })
@@ -112,15 +112,29 @@ const AccountDetails = () => {
                 value={name}
                 placeholder='John'
                 onChange={e => setName(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-user-3-line' />
+                    </InputAdornment>
+                  )
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Mobile No.'
-                value={mobile_no}
+                value={mobileNo}
                 placeholder=''
-                onChange={e => setMobile_no(e.target.value)}
+                onChange={e => setMobileNo(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-phone-fill' />
+                    </InputAdornment>
+                  )
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -130,10 +144,29 @@ const AccountDetails = () => {
                 value={email}
                 placeholder='john.doe@gmail.com'
                 onChange={e => setEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-mail-line' />
+                    </InputAdornment>
+                  )
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField fullWidth label='Role' value={roles} disabled />
+              <TextField
+                fullWidth
+                label='Role'
+                value={roles}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-admin-line' />
+                    </InputAdornment>
+                  )
+                }}
+                disabled
+              />
             </Grid>
 
             <Grid item xs={12} className='flex gap-4 flex-wrap'>

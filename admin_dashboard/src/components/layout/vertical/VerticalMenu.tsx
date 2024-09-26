@@ -65,7 +65,7 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
           <MenuItem href='/'>Analytics</MenuItem>
         </SubMenu>
 
-        <MenuSection label='User Profile'>
+        {/* <MenuSection label='User Profile'>
           <MenuItem href='/account-settings' icon={<i className='ri-user-settings-line' />}>
             Account Settings
           </MenuItem>
@@ -92,12 +92,12 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
           <MenuItem href='/card-basic' icon={<i className='ri-bar-chart-box-line' />}>
             Cards
           </MenuItem>
-        </MenuSection>
-        <MenuSection label='Forms & Tables'>
+        </MenuSection> */}
+        {/* <MenuSection label='Forms & Tables'>
           <MenuItem href='/form-layouts' icon={<i className='ri-layout-4-line' />}>
             Form Layouts
           </MenuItem>
-        </MenuSection>
+        </MenuSection> */}
         <MenuSection label='App & Pages'>
           <SubMenu label='Roles & Permission' icon={<i className='ri-lock-star-line' />}>
             <MenuItem href='/roles'>Roles</MenuItem>
