@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid'
 
-import AddRoleSettings from '@/views/roles&permission/add-role-settings/addRoleSettings'
+import AddRoleSettings from '@/views/roles/add/addRoleSettings'
 
 const AddRolePage = () => {
   return (
