@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material'
-import AddSchoolPage from '@/views/school/add-school/addSchool'
+import AddSchoolPage from '@/views/school/add/addSchool'
 
 const Subject = () => {
   return (

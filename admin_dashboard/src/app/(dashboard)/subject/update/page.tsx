@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material'
-import UpdateSubject from '@views/subject-settings/update-subject/updateSubject'
+import UpdateSubject from '@/views/subject-settings/update/updateSubject'
 
 const UpdateSubjectPage = () => {
   return (

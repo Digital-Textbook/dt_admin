@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material'
-import UpdateTextbook from '@/views/textbook-settings/update-textbook/updateTextbook'
+import UpdateTextbook from '@/views/textbook-settings/update/updateTextbook'
 
 const UpdateTextbookPage = () => {
   return (

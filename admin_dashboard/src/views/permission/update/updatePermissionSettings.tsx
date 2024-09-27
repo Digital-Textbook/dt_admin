@@ -50,8 +50,6 @@ const UpdatePermissionSettings = () => {
     }
   }, [id])
 
-  console.log('Permission Data::', permissionData)
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 

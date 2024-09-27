@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material'
-import UpdateSchool from '@/views/school/update-school/updateSchool'
+import UpdateSchool from '@/views/school/update/updateSchool'
 
 const UpdateSchoolPage = () => {
   return (

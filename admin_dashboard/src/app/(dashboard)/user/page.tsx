@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid'
 
-import UserTable from '@/views/users/user/user'
+import UserTable from '@/views/users/user'
 
 const userViewPage = () => {
   return (
