@@ -58,7 +58,7 @@ const RoleSettingsPage = () => {
   }, [])
 
   const handleEditClick = (id: string) => {
-    router.push(`/roles/update?id=${id}`)
+    router.push(`/permission/update?id=${id}`)
   }
 
   const formatDate = (dateString: string) => {

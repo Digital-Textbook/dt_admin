@@ -14,28 +14,59 @@ import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+type permission = {
+  permissionName: string
+  description: string
+}
 
 const UpdatePermissionSettings = () => {
   const [permissionName, setPermissionName] = useState('')
   const [description, setDescription] = useState('')
+  const [permissionData, setPermissionData] = useState<permission[]>([])
+
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchPermissionData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/digital-textbook/permission/${id}`)
+        setPermissionData(response.data)
+        if (response.data) {
+          setPermissionName(response.data.permissionName)
+          setDescription(response.data.description)
+        }
+      } catch (err) {
+        console.error('Error fetching permission data:', err)
+        toast.error('Error while fetching permission data!')
+      }
+    }
+
+    if (id) {
+      fetchPermissionData()
+    }
+  }, [id])
+
+  console.log('Permission Data::', permissionData)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/digital-textbook/permission', {
+      const response = await axios.patch(`http://localhost:3001/digital-textbook/permission/${id}`, {
         permissionName,
         description
       })
-      toast.success('Permission added successfully!')
+      toast.success('Permission updated successfully!')
       setTimeout(() => {
         router.push('/permission')
       }, 3000)
     } catch (error) {
-      toast.error('Error while creating permission. Please try again!')
-      console.error('Error while creating permission:', error)
+      toast.error('Error while updating permission. Please try again!')
+      console.error('Error while updating permission:', error)
     }
   }
 
@@ -56,7 +87,6 @@ const UpdatePermissionSettings = () => {
                   fullWidth
                   id='permissionName'
                   name='permissionName'
-                  placeholder=''
                   value={permissionName}
                   required
                   onChange={e => setPermissionName(e.target.value)}
@@ -76,7 +106,6 @@ const UpdatePermissionSettings = () => {
                   fullWidth
                   id='description'
                   name='description'
-                  placeholder=''
                   value={description}
                   required
                   onChange={e => setDescription(e.target.value)}

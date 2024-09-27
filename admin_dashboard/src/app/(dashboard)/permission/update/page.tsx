@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid'
 
-import UpdatePermissionSettings from '@/views/permission/permission-settings'
+import UpdatePermissionSettings from '@/views/permission/update/updatePermissionSettings'
 
 const PermissionPage = () => {
   return (
