@@ -24,13 +24,15 @@ import { useRouter } from 'next/navigation'
 
 type Role = {
   id: string
-  role: string
+  name: string
+  description: string
 }
 
 type permission = {
   id: string
   permissionName: string
-  description: string
+  subject: string
+  action: string
   createdAt: string
   roles: Role[]
 }
@@ -75,8 +77,8 @@ const RoleSettingsPage = () => {
 
   const roleColors: Record<string, string> = {
     ADMIN: '#4caf50',
-    SUPER_ADMIN: '#ef5350',
-    MANAGEMENT: '#ffee58'
+    'SUPER ADMIN': '#ef5350',
+    USER: '#ffee58'
   }
 
   const getRoleColor = (role: string) => roleColors[role] || '#e1bee7'
@@ -178,7 +180,7 @@ const RoleSettingsPage = () => {
                           <Typography
                             key={role.id}
                             style={{
-                              backgroundColor: getRoleColor(role.role),
+                              backgroundColor: getRoleColor(role.name),
                               color: 'white',
                               padding: '4px 8px',
                               borderRadius: '24px',
@@ -187,14 +189,16 @@ const RoleSettingsPage = () => {
                               fontSize: '12px'
                             }}
                           >
-                            {role.role}
+                            {role.name}
                           </Typography>
                         ))}
                       </div>
                     </td>
 
                     <td className='!plb-1'>
-                      <Typography>{row.description}</Typography>
+                      <Typography>
+                        {row.action} {row.subject}
+                      </Typography>
                     </td>
 
                     <td className='!plb-1'>
@@ -208,8 +212,8 @@ const RoleSettingsPage = () => {
                           gap: 3
                         }}
                       >
-                        {<i className='ri-delete-bin-7-line' onClick={() => handleDeleteClick(row.id)} />}
                         {<i className='ri-edit-line' onClick={() => handleEditClick(row.id)} />}
+                        {<i className='ri-delete-bin-line' onClick={() => handleDeleteClick(row.id)} />}
                       </Box>
                     </td>
                   </tr>

@@ -9,7 +9,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import { Divider, InputLabel, MenuItem, Typography } from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -18,12 +18,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 
 type permission = {
   permissionName: string
-  description: string
+  action: string
+  subject: string
 }
 
 const UpdatePermissionSettings = () => {
   const [permissionName, setPermissionName] = useState('')
-  const [description, setDescription] = useState('')
+  const [action, setAction] = useState('')
+  const [subject, setSubject] = useState('')
   const [permissionData, setPermissionData] = useState<permission[]>([])
 
   const searchParams = useSearchParams()
@@ -37,7 +39,8 @@ const UpdatePermissionSettings = () => {
         setPermissionData(response.data)
         if (response.data) {
           setPermissionName(response.data.permissionName)
-          setDescription(response.data.description)
+          setAction(response.data.action)
+          setSubject(response.data.subject)
         }
       } catch (err) {
         console.error('Error fetching permission data:', err)
@@ -56,7 +59,8 @@ const UpdatePermissionSettings = () => {
     try {
       const response = await axios.patch(`http://localhost:3001/digital-textbook/permission/${id}`, {
         permissionName,
-        description
+        action,
+        subject
       })
       toast.success('Permission updated successfully!')
       setTimeout(() => {
@@ -72,13 +76,31 @@ const UpdatePermissionSettings = () => {
     <>
       <Card>
         <ToastContainer />
-        <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Create Permission' />
+        <Grid item xs={12}>
+          <CardHeader title='Update Permission' />
           <Divider />
         </Grid>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <Grid item xs={12} sm={12}>
+                <Typography
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: '#fff8e1',
+                    padding: '20px',
+                    color: '#FFB400',
+                    borderRadius: '16px',
+                    fontSize: '16px'
+                  }}
+                >
+                  <i className='ri-error-warning-line' style={{ fontSize: '28px', marginRight: '10px' }} />
+                  By editing the permission name, you might break the system permissions functionality. Please ensure
+                  you're absolutely certain before proceeding.
+                </Typography>
+              </Grid>
+
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='permissionName'>Permission Name</InputLabel>
                 <TextField
@@ -99,14 +121,33 @@ const UpdatePermissionSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='description'>Description</InputLabel>
+                <InputLabel htmlFor='action'>Action</InputLabel>
                 <TextField
                   fullWidth
-                  id='description'
-                  name='description'
-                  value={description}
+                  id='action'
+                  name='action'
+                  value={action}
                   required
-                  onChange={e => setDescription(e.target.value)}
+                  onChange={e => setAction(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-send-plane-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='subject'>Subject</InputLabel>
+                <TextField
+                  fullWidth
+                  id='subject'
+                  name='subject'
+                  value={subject}
+                  required
+                  onChange={e => setSubject(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>

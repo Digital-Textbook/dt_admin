@@ -1,15 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
 
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  TextField
+} from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -17,7 +20,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 
 const AddRoleSettings = () => {
-  const [role, setRole] = useState('')
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
 
   const router = useRouter()
 
@@ -26,7 +30,8 @@ const AddRoleSettings = () => {
 
     try {
       const response = await axios.post('http://localhost:3001/digital-textbook/role', {
-        role
+        name,
+        description
       })
       toast.success('Role added successfully!')
       setTimeout(() => {
@@ -38,33 +43,51 @@ const AddRoleSettings = () => {
     }
   }
 
-  console.log('Role::', role)
-
   return (
     <>
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Create Admin' />
+          <CardHeader title='Create Role' />
           <Divider />
         </Grid>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='role'>Role</InputLabel>
+                <InputLabel htmlFor='name'>Role</InputLabel>
                 <TextField
                   fullWidth
-                  id='role'
-                  name='role'
+                  id='name'
+                  name='name'
                   placeholder=''
-                  value={role}
+                  value={name}
                   required
-                  onChange={e => setRole(e.target.value)}
+                  onChange={e => setName(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-user-3-line' />
+                        <i className='ri-user-add-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='Description'>Description</InputLabel>
+                <TextField
+                  fullWidth
+                  id='description'
+                  name='description'
+                  placeholder=''
+                  value={description}
+                  required
+                  onChange={e => setDescription(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-edit-line' />
                       </InputAdornment>
                     )
                   }}

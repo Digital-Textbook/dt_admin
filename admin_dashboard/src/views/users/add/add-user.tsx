@@ -47,6 +47,10 @@ const AddUser = () => {
     }
   }
 
+  const handleCancel = () => {
+    router.push(`/user`)
+  }
+
   return (
     <>
       <Card>
@@ -64,7 +68,6 @@ const AddUser = () => {
                   fullWidth
                   id='name'
                   name='name'
-                  placeholder='John Doe'
                   value={name}
                   required
                   onChange={e => setName(e.target.value)}
@@ -90,7 +93,7 @@ const AddUser = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-contacts-book-2-line' />
                       </InputAdornment>
                     )
                   }}
@@ -109,7 +112,7 @@ const AddUser = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-graduation-cap-line' />
+                        <i className='ri-phone-line' />
                       </InputAdornment>
                     )
                   }}
@@ -129,7 +132,7 @@ const AddUser = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-user-add-line' />
                       </InputAdornment>
                     )
                   }}
@@ -152,7 +155,7 @@ const AddUser = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-pages-line' />
+                        <i className='ri-mail-send-line' />
                       </InputAdornment>
                     )
                   }}
@@ -172,7 +175,7 @@ const AddUser = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-mail-add-fill' />
                       </InputAdornment>
                     )
                   }}
@@ -186,7 +189,7 @@ const AddUser = () => {
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' color='error' onClick={handleCancel}>
                   Cancel
                 </Button>
               </Grid>

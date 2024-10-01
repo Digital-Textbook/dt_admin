@@ -61,7 +61,7 @@ const ResetPassword = () => {
   }
 
   const handleCancel = async () => {
-    window.location.reload()
+    router.push('/')
   }
 
   return (

@@ -39,7 +39,7 @@ const AccountDetails = () => {
           setName(response.data.name)
           setEmail(response.data.email)
           setMobileNo(response.data.mobileNo)
-          setRoles(response.data.role.role)
+          setRoles(response.data.role.name)
           setStatus(response.data.status)
         }
       } catch (err) {

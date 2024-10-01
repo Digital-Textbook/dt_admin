@@ -126,7 +126,7 @@ const UserDropdown = () => {
                       <Typography className='font-medium' color='text.primary'>
                         {user?.name || 'No Name Available'}
                       </Typography>
-                      <Typography variant='caption'>{user?.roles || 'No Roles Available'}</Typography>
+                      <Typography variant='caption'>{user?.role.name || 'No Roles Available'}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />

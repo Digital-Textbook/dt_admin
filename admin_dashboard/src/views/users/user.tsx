@@ -142,63 +142,71 @@ const UserTable = () => {
               </tr>
             </thead>
             <tbody>
-              {userData.map((row, index) => {
-                return (
-                  <tr key={index}>
-                    <td className='!plb-1'>
-                      <Typography>{row.name}</Typography>
-                    </td>
-                    <td className='!plb-1'>
-                      <Typography>{row.cidNo}</Typography>
-                    </td>
-                    <td className='!plb-1'>
-                      <Typography>{row.mobileNo}</Typography>
-                    </td>
-                    <td className='!plb-1'>
-                      <Typography>{row.email}</Typography>
-                    </td>
-                    <td className='!plb-1'>
-                      <Typography>{row.userType}</Typography>
-                    </td>
-                    <td className='!plb-1'>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: 1
-                        }}
-                      >
-                        <Button
-                          variant='contained'
+              {userData.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center' }}>
+                    <Typography>No user data in database</Typography>
+                  </td>
+                </tr>
+              ) : (
+                userData.map((row, index) => {
+                  return (
+                    <tr key={index}>
+                      <td className='!plb-1'>
+                        <Typography>{row.name}</Typography>
+                      </td>
+                      <td className='!plb-1'>
+                        <Typography>{row.cidNo}</Typography>
+                      </td>
+                      <td className='!plb-1'>
+                        <Typography>{row.mobileNo}</Typography>
+                      </td>
+                      <td className='!plb-1'>
+                        <Typography>{row.email}</Typography>
+                      </td>
+                      <td className='!plb-1'>
+                        <Typography>{row.userType}</Typography>
+                      </td>
+                      <td className='!plb-1'>
+                        <Box
                           sx={{
-                            color: 'white',
-                            background: 'green',
-                            '&:hover': {
-                              background: '#4caf50'
-                            }
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 1
                           }}
-                          onClick={() => handleEdit(row.id)}
                         >
-                          Edit
-                        </Button>
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'red',
-                            '&:hover': {
-                              background: '#ef5350'
-                            }
-                          }}
-                          onClick={() => handleDeleteClick(row.id)}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    </td>
-                  </tr>
-                )
-              })}
+                          <Button
+                            variant='contained'
+                            sx={{
+                              color: 'white',
+                              background: 'green',
+                              '&:hover': {
+                                background: '#4caf50'
+                              }
+                            }}
+                            onClick={() => handleEdit(row.id)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant='contained'
+                            sx={{
+                              color: 'white',
+                              background: 'red',
+                              '&:hover': {
+                                background: '#ef5350'
+                              }
+                            }}
+                            onClick={() => handleDeleteClick(row.id)}
+                          >
+                            Delete
+                          </Button>
+                        </Box>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
             </tbody>
           </table>
         </div>

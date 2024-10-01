@@ -94,6 +94,10 @@ const TextbookPage = () => {
     setSelectedId(null)
   }
 
+  const handleAddTextbook = () => {
+    router.push(`/textbook/add`)
+  }
+
   return (
     <>
       <ToastContainer />
@@ -123,20 +127,20 @@ const TextbookPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='textbook/add' passHref>
-            <Button
-              variant='contained'
-              sx={{
-                background: 'green',
-                color: 'white',
-                '&:hover': {
-                  background: '#4caf50'
-                }
-              }}
-            >
-              Add
-            </Button>
-          </Link>
+
+          <Button
+            variant='contained'
+            sx={{
+              background: 'green',
+              color: 'white',
+              '&:hover': {
+                background: '#4caf50'
+              }
+            }}
+            onClick={handleAddTextbook}
+          >
+            Add
+          </Button>
         </Box>
         <Divider />
       </Grid>
@@ -158,30 +162,37 @@ const TextbookPage = () => {
               </tr>
             </thead>
             <tbody>
-              {textbookData.map((row, index) => (
-                <tr key={index}>
-                  <td className='!plb-1'>
-                    <Typography>{row.author}</Typography>
+              {textbookData.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center' }}>
+                    <Typography>No textbook data in database</Typography>
                   </td>
-                  <td className='!plb-1'>
-                    <Typography>{row.subjectName}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography sx={{ textAlign: 'center' }}>{row.class}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography sx={{ textAlign: 'center' }}>{row.chapter}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography sx={{ textAlign: 'center' }}> {row.totalPages || 'N/A'}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography>{row.summary}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography>{row.edition}</Typography>
-                  </td>
-                  {/* <td className='!plb-1'>
+                </tr>
+              ) : (
+                textbookData.map((row, index) => (
+                  <tr key={index}>
+                    <td className='!plb-1'>
+                      <Typography>{row.author}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography>{row.subjectName}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography sx={{ textAlign: 'center' }}>{row.class}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography sx={{ textAlign: 'center' }}>{row.chapter}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography sx={{ textAlign: 'center' }}> {row.totalPages || 'N/A'}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography>{row.summary}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography>{row.edition}</Typography>
+                    </td>
+                    {/* <td className='!plb-1'>
                     {row.coverUrl ? (
                       <img
                         src={row.coverUrl}
@@ -194,66 +205,67 @@ const TextbookPage = () => {
                       'No Cover'
                     )}
                   </td> */}
-                  <td className='!plb-1'>
-                    {row.textbookUrl ? (
-                      <>
-                        {row.textbookUrl.endsWith('.pdf') ? (
-                          <Grid sx={{ flexDirection: 'row', display: 'flex' }}>
-                            <i className='ri-file-pdf-2-fill' />
-                            <Typography>PDF</Typography>
-                          </Grid>
-                        ) : row.textbookUrl.endsWith('.epub') ? (
-                          <Grid sx={{ flexDirection: 'row', display: 'flex' }}>
-                            <i className='ri-article-line' />
-                            <Typography>EPUB</Typography>
-                          </Grid>
-                        ) : (
-                          <iframe src={row.textbookUrl} width='100' height='80' style={{ border: 'none' }} />
-                        )}
-                      </>
-                    ) : (
-                      'No Textbook'
-                    )}
-                  </td>
+                    <td className='!plb-1'>
+                      {row.textbookUrl ? (
+                        <>
+                          {row.textbookUrl.endsWith('.pdf') ? (
+                            <Grid sx={{ flexDirection: 'row', display: 'flex' }}>
+                              <i className='ri-file-pdf-2-fill' />
+                              <Typography>PDF</Typography>
+                            </Grid>
+                          ) : row.textbookUrl.endsWith('.epub') ? (
+                            <Grid sx={{ flexDirection: 'row', display: 'flex' }}>
+                              <i className='ri-article-line' />
+                              <Typography>EPUB</Typography>
+                            </Grid>
+                          ) : (
+                            <iframe src={row.textbookUrl} width='100' height='80' style={{ border: 'none' }} />
+                          )}
+                        </>
+                      ) : (
+                        'No Textbook'
+                      )}
+                    </td>
 
-                  <td className='!plb-1'>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 1
-                      }}
-                    >
-                      <Button
-                        variant='contained'
+                    <td className='!plb-1'>
+                      <Box
                         sx={{
-                          color: 'white',
-                          background: 'green',
-                          '&:hover': {
-                            background: '#4caf50'
-                          }
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1
                         }}
-                        onClick={() => handleEdit(row.id)}
                       >
-                        Edit
-                      </Button>
-                      <Button
-                        variant='contained'
-                        sx={{
-                          color: 'white',
-                          background: 'red',
-                          '&:hover': {
-                            background: '#ef5350'
-                          }
-                        }}
-                        onClick={() => handleDeleteClick(row.id)}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
-                  </td>
-                </tr>
-              ))}
+                        <Button
+                          variant='contained'
+                          sx={{
+                            color: 'white',
+                            background: 'green',
+                            '&:hover': {
+                              background: '#4caf50'
+                            }
+                          }}
+                          onClick={() => handleEdit(row.id)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant='contained'
+                          sx={{
+                            color: 'white',
+                            background: 'red',
+                            '&:hover': {
+                              background: '#ef5350'
+                            }
+                          }}
+                          onClick={() => handleDeleteClick(row.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Box>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

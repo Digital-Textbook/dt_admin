@@ -9,7 +9,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import { Divider, InputLabel, MenuItem, Typography } from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -18,7 +18,8 @@ import { useRouter } from 'next/navigation'
 
 const AddPermissionSettingd = () => {
   const [permissionName, setPermissionName] = useState('')
-  const [description, setDescription] = useState('')
+  const [action, setAction] = useState('')
+  const [subject, setSubject] = useState('')
   const router = useRouter()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -27,7 +28,8 @@ const AddPermissionSettingd = () => {
     try {
       const response = await axios.post('http://localhost:3001/digital-textbook/permission', {
         permissionName,
-        description
+        action,
+        subject
       })
       toast.success('Permission added successfully!')
       setTimeout(() => {
@@ -43,7 +45,7 @@ const AddPermissionSettingd = () => {
     <>
       <Card>
         <ToastContainer />
-        <Grid item xs={12} sx={{ marginBottom: 5 }}>
+        <Grid item xs={12}>
           <CardHeader title='Create Permission' />
           <Divider />
         </Grid>
@@ -68,18 +70,31 @@ const AddPermissionSettingd = () => {
                     )
                   }}
                 />
+                <Typography
+                  mt={3}
+                  sx={{
+                    background: '#fff8e1',
+                    padding: '20px',
+                    color: '#FFB400',
+                    borderRadius: '16px',
+                    fontSize: '14px'
+                  }}
+                >
+                  Permission Name specifies the action a role is allowed to perform, such as "Create User". It should be
+                  clear and descriptive to ensure proper access control and avoid confusion.
+                </Typography>
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='description'>Description</InputLabel>
+                <InputLabel htmlFor='action'>Action</InputLabel>
                 <TextField
                   fullWidth
-                  id='description'
-                  name='description'
+                  id='action'
+                  name='action'
                   placeholder=''
-                  value={description}
+                  value={action}
                   required
-                  onChange={e => setDescription(e.target.value)}
+                  onChange={e => setAction(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
@@ -88,6 +103,52 @@ const AddPermissionSettingd = () => {
                     )
                   }}
                 />
+                <Typography
+                  mt={3}
+                  sx={{
+                    background: '#fff8e1',
+                    padding: '20px',
+                    color: '#FFB400',
+                    borderRadius: '16px',
+                    fontSize: '14px'
+                  }}
+                >
+                  The `action` field defines what kind of operation can be performed. Common actions are based on CRUD
+                  (Create, Read, Update, Delete)
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='subject'>Subject</InputLabel>
+                <TextField
+                  fullWidth
+                  id='subject'
+                  name='subject'
+                  placeholder=''
+                  value={subject}
+                  required
+                  onChange={e => setSubject(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-book-3-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Typography
+                  mt={3}
+                  sx={{
+                    background: '#fff8e1',
+                    padding: '20px',
+                    color: '#FFB400',
+                    borderRadius: '16px',
+                    fontSize: '14px'
+                  }}
+                >
+                  The `subject` field defines the resource or entity on which the `action` can be performed. It
+                  represents the domain or the object that is being accessed or manipulated.
+                </Typography>
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>

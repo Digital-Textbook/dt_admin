@@ -1,20 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
+import { useState, useEffect, FormEvent } from 'react'
 
-import { Divider, InputLabel, MenuItem } from '@mui/material'
-import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  TextField
+} from '@mui/material'
 
 type Subject = any
 
@@ -130,7 +133,6 @@ const AddTextbook = () => {
                   fullWidth
                   id='author'
                   name='author'
-                  placeholder='John Doe'
                   value={author}
                   required
                   onChange={e => setAuthor(e.target.value)}
@@ -150,7 +152,6 @@ const AddTextbook = () => {
                   fullWidth
                   id='chapter'
                   name='chapter'
-                  placeholder='8'
                   value={chapter}
                   required
                   onChange={e => setChapter(e.target.value)}
@@ -232,7 +233,6 @@ const AddTextbook = () => {
                   fullWidth
                   id='totalPages'
                   name='totalPages'
-                  placeholder='240'
                   value={totalPages}
                   required
                   onChange={e => setTotalPages(e.target.value)}

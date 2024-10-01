@@ -1,19 +1,24 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
 
 import type { FormEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  TextField,
+  Typography
+} from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 interface Classes {
@@ -57,6 +62,7 @@ const UpdateSubject = () => {
         if (response.data) {
           setGrade(response.data.class)
           setSubjectName(response.data.subjectName)
+          setClassId(response.data.classId)
         }
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -98,6 +104,24 @@ const UpdateSubject = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <Grid item xs={12} sm={12}>
+                <Typography
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: '#fff8e1',
+                    padding: '20px',
+                    color: '#FFB400',
+                    borderRadius: '16px',
+                    fontSize: '16px'
+                  }}
+                >
+                  <i className='ri-error-warning-line' style={{ fontSize: '28px', marginRight: '10px' }} />
+                  Please be advised that modifying the subject information may impact the system's subject-related
+                  functionalities. We urge you to proceed with caution and ensure you are fully confident in your
+                  changes before continuing.
+                </Typography>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='class'>Class</InputLabel>
                 <TextField

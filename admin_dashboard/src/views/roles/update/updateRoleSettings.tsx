@@ -1,84 +1,112 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
 
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  TextField,
+  Typography
+} from '@mui/material'
 import type { FormEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-type admin = {
+interface Role {
   id: string
   name: string
-  email: string
-  roles: string
-  status: string
-  mobileNo: string
+  description: string
+  permissions: Permission[]
 }
 
-type role = {
+type Permission = {
   id: string
-  role: string
+  permissionName: string
+  action: string
+  subject: string
 }
 
 const UpdateRoleSettings = () => {
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [role, setRole] = useState('')
-  const [roleId, setRoleId] = useState('')
-  const [status, setStatus] = useState('')
-  const [mobileNo, setMobileNo] = useState('')
+  const [description, setDescription] = useState('')
+  const [role, setRole] = useState<Role[]>([])
 
-  const router = useRouter()
-
-  const [user, setUser] = useState<admin[]>([])
-  const [roleData, setRoleData] = useState<role[]>([])
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
+  const router = useRouter()
+
+  const [permissionData, setPermissionData] = useState<Permission[]>([])
+  const [roleData, setRoleData] = useState<Role | null>(null)
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
+
+  useEffect(() => {
+    const fetchPermissionData = async () => {
+      try {
+        const response: AxiosResponse<Permission[]> = await axios.get(
+          'http://localhost:3001/digital-textbook/permission'
+        )
+        setPermissionData(response.data)
+      } catch (err) {
+        console.error('Error while fetching permission!', err)
+        toast.error('Error while fetching permission!')
+      }
+    }
+
+    fetchPermissionData()
+  }, [])
 
   useEffect(() => {
     const fetchRoleData = async () => {
       try {
-        const response: AxiosResponse<role[]> = await axios.get('http://localhost:3001/digital-textbook/role')
+        const response: AxiosResponse<Role> = await axios.get(
+          `http://localhost:3001/digital-textbook/role/${id}/permission`
+        )
         setRoleData(response.data)
+        setSelectedPermissions(response.data.permissions.map(perm => perm.id))
+      } catch (err) {
+        console.error('Error while fetching role data!', err)
+        toast.error('Error while fetching role data!')
+      }
+    }
+
+    if (id) {
+      fetchRoleData()
+    }
+  }, [id])
+
+  const handlePermissionChange = (permissionId: string) => {
+    setSelectedPermissions(prev =>
+      prev.includes(permissionId) ? prev.filter(id => id !== permissionId) : [...prev, permissionId]
+    )
+  }
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/digital-textbook/role/${id}`)
+        setRole(response.data)
+        if (response.data) {
+          setName(response.data.name)
+          setDescription(response.data.description)
+        }
       } catch (err) {
         console.error('Error fetching role data:', err)
         toast.error('Error while fetching role data!')
       }
     }
 
-    fetchRoleData()
-  }, [])
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3001/digital-textbook/admin/${id}`)
-        setUser(response.data)
-        if (response.data) {
-          setName(response.data.name)
-          setEmail(response.data.email)
-          setRole(response.data.role.role)
-          setStatus(response.data.status)
-          setMobileNo(response.data.mobileNo)
-        }
-      } catch (err) {
-        console.error('Error fetching user data:', err)
-        toast.error('Error while fetching user!')
-      }
-    }
-
     if (id) {
-      fetchUserData()
+      fetchRole()
     }
   }, [id])
 
@@ -86,20 +114,20 @@ const UpdateRoleSettings = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/admin/${id}`, {
-        name,
-        email,
-        roleId,
-        status,
-        mobileNo
+      const response = await axios.patch(`http://localhost:3001/digital-textbook/role/${id}/permissions`, {
+        permissionIds: selectedPermissions,
+        roleData: {
+          name,
+          description
+        }
       })
-      toast.success('Admin updated successfully!')
+      toast.success('Role updated successfully!')
       setTimeout(() => {
         router.push('/roles')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading admin. Please try again!')
-      console.error('Error while updating admin:', error)
+      toast.error('Error while updating role. Please try again!')
+      console.error('Error while updating role:', error)
     }
   }
 
@@ -108,26 +136,26 @@ const UpdateRoleSettings = () => {
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Update Admin' />
+          <CardHeader title='Update Role' />
           <Divider />
         </Grid>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='name'>Name</InputLabel>
+                <InputLabel htmlFor='name'>Role</InputLabel>
                 <TextField
                   fullWidth
                   id='name'
                   name='name'
-                  placeholder='John Doe'
+                  placeholder=''
                   value={name}
                   required
                   onChange={e => setName(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-user-3-line' />
+                        <i className='ri-user-add-line' />
                       </InputAdornment>
                     )
                   }}
@@ -135,104 +163,48 @@ const UpdateRoleSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='email'>Email</InputLabel>
+                <InputLabel htmlFor='Description'>Description</InputLabel>
                 <TextField
                   fullWidth
-                  id='email'
-                  name='email'
-                  value={email}
-                  required
-                  onChange={e => setEmail(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='role'>Role</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='role'
-                  name='role'
-                  value={role}
-                  required
-                  onChange={e => {
-                    const selectedRole = roleData.find(rls => rls.role === e.target.value)
-                    if (selectedRole) {
-                      setRole(e.target.value)
-                      setRoleId(selectedRole.id)
-                    }
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  {roleData.map(role => (
-                    <MenuItem key={role.id} value={role.role}>
-                      {role.role}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='status'>Status</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='status'
-                  name='status'
-                  value={status}
-                  required
-                  onChange={e => setStatus(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  <MenuItem value='active'>ACTIVE</MenuItem>
-                  <MenuItem value='inactive'>INACTIVE</MenuItem>
-                </TextField>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='mobileNo'>Mobile No.</InputLabel>
-                <TextField
-                  fullWidth
-                  id='mobileNo'
-                  name='mobileNo'
+                  id='description'
+                  name='description'
                   placeholder=''
-                  value={mobileNo}
+                  value={description}
                   required
-                  onChange={e => setMobileNo(e.target.value)}
+                  onChange={e => setDescription(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-pages-line' />
+                        <i className='ri-edit-line' />
                       </InputAdornment>
                     )
                   }}
                 />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant='h5' mb={3}>
+                  Role Permissions
+                </Typography>
+                {permissionData.map(permission => (
+                  <FormControlLabel
+                    key={permission.id}
+                    control={
+                      <Checkbox
+                        checked={selectedPermissions.includes(permission.id)}
+                        onChange={() => handlePermissionChange(permission.id)}
+                      />
+                    }
+                    label={`${permission.permissionName}`}
+                  />
+                ))}
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' onClick={() => setSelectedPermissions([])}>
                   Cancel
                 </Button>
               </Grid>

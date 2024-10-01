@@ -140,53 +140,61 @@ const SchoolPage = () => {
               </tr>
             </thead>
             <tbody>
-              {schoolData.map((row, index) => (
-                <tr key={index}>
-                  <td className='!plb-1'>
-                    <Typography>{row.name}</Typography>
-                  </td>
-                  <td className='!plb-1'>
-                    <Typography>{row.dzongkhag}</Typography>
-                  </td>
-
-                  <td className='!plb-1'>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 1
-                      }}
-                    >
-                      <Button
-                        variant='contained'
-                        sx={{
-                          color: 'white',
-                          background: 'green',
-                          '&:hover': {
-                            background: '#4caf50'
-                          }
-                        }}
-                        onClick={() => handleEdit(row.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant='contained'
-                        sx={{
-                          color: 'white',
-                          background: 'red',
-                          '&:hover': {
-                            background: '#ef5350'
-                          }
-                        }}
-                        onClick={() => handleDeleteClick(row.id)}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
+              {schoolData.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center' }}>
+                    <Typography>No school data in database</Typography>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                schoolData.map((row, index) => (
+                  <tr key={index}>
+                    <td className='!plb-1'>
+                      <Typography>{row.name}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography>{row.dzongkhag}</Typography>
+                    </td>
+
+                    <td className='!plb-1'>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1
+                        }}
+                      >
+                        <Button
+                          variant='contained'
+                          sx={{
+                            color: 'white',
+                            background: 'green',
+                            '&:hover': {
+                              background: '#4caf50'
+                            }
+                          }}
+                          onClick={() => handleEdit(row.id)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant='contained'
+                          sx={{
+                            color: 'white',
+                            background: 'red',
+                            '&:hover': {
+                              background: '#ef5350'
+                            }
+                          }}
+                          onClick={() => handleDeleteClick(row.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Box>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
