@@ -75,6 +75,25 @@ const AddSchool = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='schoolName'>School</InputLabel>
+                <TextField
+                  fullWidth
+                  id='schoolName'
+                  name='schoolName'
+                  value={schoolName}
+                  required
+                  onChange={e => setSchoolName(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-graduation-cap-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='dzongkhag'>Dzongkhag</InputLabel>
                 <TextField
                   select
@@ -93,7 +112,7 @@ const AddSchool = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-graduation-cap-line' />
+                        <i className='ri-map-pin-line' />
                       </InputAdornment>
                     )
                   }}
@@ -106,30 +125,11 @@ const AddSchool = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='schoolName'>School</InputLabel>
-                <TextField
-                  fullWidth
-                  id='schoolName'
-                  name='schoolName'
-                  value={schoolName}
-                  required
-                  onChange={e => setSchoolName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
-
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' onClick={() => router.push('/subject')}>
+                <Button variant='contained' color='error' onClick={() => router.push('/subject')}>
                   Cancel
                 </Button>
               </Grid>

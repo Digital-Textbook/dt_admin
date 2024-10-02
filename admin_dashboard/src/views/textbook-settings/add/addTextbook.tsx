@@ -1,11 +1,6 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
-
-import axios from 'axios'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { useRouter } from 'next/navigation'
 import {
   Button,
   Card,
@@ -19,6 +14,11 @@ import {
   TextField
 } from '@mui/material'
 
+import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useRouter } from 'next/navigation'
+
 type Subject = any
 
 interface SubjectAndClass {
@@ -31,11 +31,9 @@ interface SubjectAndClass {
 
 const AddTextbook = () => {
   const [author, setAuthor] = useState('')
-
   const [subject, setSubject] = useState('')
   const [grade, setGrade] = useState('')
   const [subjectId, setSubjectId] = useState('')
-
   const [chapter, setChapter] = useState('')
   const [totalPages, setTotalPages] = useState('')
   const [edition, setEdition] = useState('')
@@ -115,11 +113,10 @@ const AddTextbook = () => {
       console.error('Error uploading textbook:', error)
     }
   }
-
   return (
     <>
+      <ToastContainer />
       <Card>
-        <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
           <CardHeader title='Add Textbook' />
           <Divider />
@@ -311,10 +308,10 @@ const AddTextbook = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' onClick={() => router.push('/textbook')} color='error'>
                   Cancel
                 </Button>
               </Grid>

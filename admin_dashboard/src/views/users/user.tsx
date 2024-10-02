@@ -1,7 +1,4 @@
 'use client'
-// MUI Imports
-import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card'
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -11,19 +8,20 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   Grid,
-  IconButton
+  IconButton,
+  Card,
+  Typography
 } from '@mui/material'
-import Link from 'next/link'
 
 import React, { useState, useEffect } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/warnings-message'
 
 type UserData = {
   id: string
@@ -111,20 +109,10 @@ const UserTable = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='user/add' passHref>
-            <Button
-              variant='contained'
-              sx={{
-                background: 'green',
-                color: 'white',
-                '&:hover': {
-                  background: '#4caf50'
-                }
-              }}
-            >
-              Add
-            </Button>
-          </Link>
+
+          <Button variant='contained' color='success' onClick={() => router.push('user/add')}>
+            Add
+          </Button>
         </Box>
         <Divider />
       </Grid>
@@ -175,30 +163,10 @@ const UserTable = () => {
                             gap: 1
                           }}
                         >
-                          <Button
-                            variant='contained'
-                            sx={{
-                              color: 'white',
-                              background: 'green',
-                              '&:hover': {
-                                background: '#4caf50'
-                              }
-                            }}
-                            onClick={() => handleEdit(row.id)}
-                          >
+                          <Button variant='contained' color='success' onClick={() => handleEdit(row.id)}>
                             Edit
                           </Button>
-                          <Button
-                            variant='contained'
-                            sx={{
-                              color: 'white',
-                              background: 'red',
-                              '&:hover': {
-                                background: '#ef5350'
-                              }
-                            }}
-                            onClick={() => handleDeleteClick(row.id)}
-                          >
+                          <Button variant='contained' color='error' onClick={() => handleDeleteClick(row.id)}>
                             Delete
                           </Button>
                         </Box>
@@ -216,16 +184,13 @@ const UserTable = () => {
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this user? User profiles, notes and bookmarks associated with user will also
-            be deleted. This action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message='user' />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color='primary'>
+          <Button onClick={handleCancelDelete} color='success' variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color='error'>
+          <Button onClick={handleConfirmDelete} color='error' variant='contained'>
             Delete
           </Button>
         </DialogActions>

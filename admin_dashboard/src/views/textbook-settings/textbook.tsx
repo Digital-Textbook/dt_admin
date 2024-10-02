@@ -25,6 +25,7 @@ import axios, { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/warnings-message'
 
 type TableBodyRowType = {
   id: string
@@ -128,17 +129,7 @@ const TextbookPage = () => {
             </div>
           </Box>
 
-          <Button
-            variant='contained'
-            sx={{
-              background: 'green',
-              color: 'white',
-              '&:hover': {
-                background: '#4caf50'
-              }
-            }}
-            onClick={handleAddTextbook}
-          >
+          <Button variant='contained' color='success' onClick={handleAddTextbook}>
             Add
           </Button>
         </Box>
@@ -235,30 +226,10 @@ const TextbookPage = () => {
                           gap: 1
                         }}
                       >
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'green',
-                            '&:hover': {
-                              background: '#4caf50'
-                            }
-                          }}
-                          onClick={() => handleEdit(row.id)}
-                        >
+                        <Button variant='contained' color='success' onClick={() => handleEdit(row.id)}>
                           Edit
                         </Button>
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'red',
-                            '&:hover': {
-                              background: '#ef5350'
-                            }
-                          }}
-                          onClick={() => handleDeleteClick(row.id)}
-                        >
+                        <Button variant='contained' color='error' onClick={() => handleDeleteClick(row.id)}>
                           Delete
                         </Button>
                       </Box>
@@ -274,16 +245,13 @@ const TextbookPage = () => {
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this textbook? Notes and bookmarks associated with textbook will also be
-            deleted. This action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message='textbook' />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color='primary'>
+          <Button onClick={handleCancelDelete} color='success' variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color='error'>
+          <Button onClick={handleConfirmDelete} color='error' variant='contained'>
             Delete
           </Button>
         </DialogActions>

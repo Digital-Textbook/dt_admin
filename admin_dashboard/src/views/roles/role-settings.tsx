@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Grid,
   IconButton,
@@ -19,6 +18,7 @@ import axios, { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/warnings-message'
 
 type Permission = {
   id: string
@@ -147,16 +147,13 @@ const RoleSettingsPage = () => {
       <Dialog open={openDeleteRoleDialog} onClose={handleCancelRole}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this Role? All the permission associated with role will be deleted. This
-            action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message='role' />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelRole} color='primary'>
+          <Button onClick={handleCancelRole} color='success' variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleDeleteRole} color='error'>
+          <Button onClick={handleDeleteRole} color='error' variant='contained'>
             Delete
           </Button>
         </DialogActions>

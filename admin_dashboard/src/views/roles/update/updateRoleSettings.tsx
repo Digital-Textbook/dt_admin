@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 
 import {
   Button,
@@ -16,11 +16,11 @@ import {
   TextField,
   Typography
 } from '@mui/material'
-import type { FormEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
+import UpdateMessage from '@/components/shared/updated-warning'
 
 interface Role {
   id: string
@@ -142,6 +142,7 @@ const UpdateRoleSettings = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <UpdateMessage message='role' />
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='name'>Role</InputLabel>
                 <TextField
@@ -201,10 +202,10 @@ const UpdateRoleSettings = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' onClick={() => setSelectedPermissions([])}>
+                <Button variant='contained' onClick={() => router.push('/roles')} color='error'>
                   Cancel
                 </Button>
               </Grid>

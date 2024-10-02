@@ -8,13 +8,11 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   Grid,
   Typography
 } from '@mui/material'
-import Link from 'next/link'
 import tableStyles from '@core/styles/table.module.css'
 
 import { useEffect, useState } from 'react'
@@ -22,6 +20,7 @@ import axios, { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/warnings-message'
 
 type Admin = {
   id: string
@@ -109,25 +108,15 @@ const RoleSettingsPage = () => {
             flexDirection: 'row',
             justifyContent: 'space-between'
           }}
+          mb={3}
         >
           <Typography fontSize={16} mb={5}>
             Find all of digital textbook's administrator accounts and their associated roles.
           </Typography>
 
-          <Link href='/admin/add' passHref>
-            <Button
-              variant='contained'
-              sx={{
-                background: 'green',
-                color: 'white',
-                '&:hover': {
-                  background: '#4caf50'
-                }
-              }}
-            >
-              Add
-            </Button>
-          </Link>
+          <Button variant='contained' color='success' onClick={() => router.push('/admin/add')}>
+            Add
+          </Button>
         </Box>
         <Divider />
       </Box>
@@ -189,14 +178,12 @@ const RoleSettingsPage = () => {
                     <td className='!pb-1'>
                       <Chip
                         className='capitalize'
-                        variant='tonal'
                         sx={{
                           backgroundColor:
-                            row.status === 'inactive' ? '#f44336' : row.status === 'active' ? 'green' : '#66bb6a',
+                            row.status === 'inactive' ? '#f44336' : row.status === 'active' ? '#56ca00' : '#cccccc',
                           color: 'white'
                         }}
                         label={row.status}
-                        size='small'
                       />
                     </td>
 
@@ -208,7 +195,7 @@ const RoleSettingsPage = () => {
                         sx={{
                           display: 'flex',
                           gap: 3,
-                          cursor: 'pointer' // Add cursor pointer for better UX
+                          cursor: 'pointer'
                         }}
                       >
                         <i className='ri-edit-line' onClick={() => handleEdit(row.id)} />
@@ -227,16 +214,13 @@ const RoleSettingsPage = () => {
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this User? All the data associated with the user will be deleted. This
-            action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message='admin' />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color='primary'>
+          <Button onClick={handleCancelDelete} color='success' variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color='error'>
+          <Button onClick={handleConfirmDelete} color='error' variant='contained'>
             Delete
           </Button>
         </DialogActions>

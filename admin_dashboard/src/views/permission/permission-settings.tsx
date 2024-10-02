@@ -76,12 +76,11 @@ const RoleSettingsPage = () => {
   }
 
   const roleColors: Record<string, string> = {
-    ADMIN: '#4caf50',
-    'SUPER ADMIN': '#ef5350',
-    USER: '#ffee58'
+    ADMIN: '#56CA00',
+    'SUPER ADMIN': '#e74c3c'
   }
 
-  const getRoleColor = (role: string) => roleColors[role] || '#e1bee7'
+  const getRoleColor = (role: string) => roleColors[role] || '#ffee58'
 
   const handleDeleteClick = (id: string) => {
     setSelectedId(id)
@@ -123,25 +122,15 @@ const RoleSettingsPage = () => {
             flexDirection: 'row',
             justifyContent: 'space-between'
           }}
+          mb={3}
         >
           <Typography fontSize={16} mb={5}>
             Find all of digital textbook's permissions and their associate roles.
           </Typography>
 
-          <Link href='permission/add' passHref>
-            <Button
-              variant='contained'
-              sx={{
-                background: 'green',
-                color: 'white',
-                '&:hover': {
-                  background: '#4caf50'
-                }
-              }}
-            >
-              Add
-            </Button>
-          </Link>
+          <Button variant='contained' color='success' onClick={() => router.push('/permission/add')}>
+            Add
+          </Button>
         </Box>
         <Divider />
       </Box>
@@ -154,7 +143,7 @@ const RoleSettingsPage = () => {
                 <th>Name</th>
                 <th>Assigned To</th>
                 <th>Description</th>
-                <th>Creaded Date</th>
+                <th>Created Date</th>
                 <th>Action</th>
               </tr>
             </thead>

@@ -15,6 +15,7 @@ import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import UpdateMessage from '@/components/shared/updated-warning'
 
 type Subject = any
 
@@ -151,6 +152,7 @@ const UpdateTextbook = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <UpdateMessage message='textbook' />
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='author'>Author</InputLabel>
                 <TextField
@@ -336,10 +338,10 @@ const UpdateTextbook = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' type='reset' color='error' onClick={() => router.push('/textbook')}>
                   Cancel
                 </Button>
               </Grid>

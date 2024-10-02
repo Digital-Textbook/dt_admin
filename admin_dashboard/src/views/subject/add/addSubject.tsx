@@ -122,10 +122,10 @@ const AddSubject = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' onClick={() => router.push('/subject')}>
+                <Button variant='contained' onClick={() => router.push('/subject')} color='error'>
                   Cancel
                 </Button>
               </Grid>

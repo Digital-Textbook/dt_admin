@@ -85,7 +85,6 @@ const AddAdmin = () => {
                   fullWidth
                   id='name'
                   name='name'
-                  placeholder='John Doe'
                   value={name}
                   required
                   onChange={e => setName(e.target.value)}
@@ -137,7 +136,7 @@ const AddAdmin = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-shield-keyhole-line' />
                       </InputAdornment>
                     )
                   }}
@@ -174,7 +173,7 @@ const AddAdmin = () => {
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' color='error' onClick={() => router.push('/roles')}>
                   Cancel
                 </Button>
               </Grid>

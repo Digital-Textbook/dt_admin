@@ -19,6 +19,7 @@ import {
   TextField
 } from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
+import UpdateMessage from '@/components/shared/updated-warning'
 
 interface dzongkhags {
   id: string
@@ -60,6 +61,7 @@ const UpdateSchool = () => {
         if (response.data) {
           setSchoolName(response.data.name)
           setDzongkhag(response.data.dzongkhag)
+          setDzongkhagId(response.data.DzongkhagId)
         }
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -83,7 +85,7 @@ const UpdateSchool = () => {
       toast.success('School updated successfully!')
       setTimeout(() => {
         router.push('/school')
-      }, 3000)
+      }, 2000)
     } catch (error) {
       toast.error('Error while updating school. Please try again!')
       console.error('Error updating school:', error)
@@ -101,6 +103,25 @@ const UpdateSchool = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <UpdateMessage message='school' />
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='schoolName'>School</InputLabel>
+                <TextField
+                  fullWidth
+                  id='schoolName'
+                  name='schoolName'
+                  value={schoolName}
+                  required
+                  onChange={e => setSchoolName(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-graduation-cap-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='dzongkhag'>Dzongkhag</InputLabel>
                 <TextField
@@ -120,7 +141,7 @@ const UpdateSchool = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-graduation-cap-line' />
+                        <i className='ri-map-pin-line' />
                       </InputAdornment>
                     )
                   }}
@@ -133,30 +154,11 @@ const UpdateSchool = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='schoolName'>School</InputLabel>
-                <TextField
-                  fullWidth
-                  id='schoolName'
-                  name='schoolName'
-                  value={schoolName}
-                  required
-                  onChange={e => setSchoolName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
-
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' onClick={() => router.push('/subject')}>
+                <Button variant='contained' onClick={() => router.push('/subject')} color='error'>
                   Cancel
                 </Button>
               </Grid>

@@ -1,20 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
+import { useState, useEffect, FormEvent } from 'react'
 
-import { Divider, InputLabel, MenuItem } from '@mui/material'
-import type { FormEvent } from 'react'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  TextField
+} from '@mui/material'
+
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
+import UpdateMessage from '@/components/shared/updated-warning'
 
 type UserData = {
   id: string
@@ -93,6 +98,7 @@ const UpdateUser = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <UpdateMessage message='user' />
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='name'>Name</InputLabel>
                 <TextField
@@ -154,6 +160,7 @@ const UpdateUser = () => {
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='userType'>User Type</InputLabel>
                 <TextField
+                  select
                   fullWidth
                   id='userType'
                   name='userType'
@@ -167,7 +174,11 @@ const UpdateUser = () => {
                       </InputAdornment>
                     )
                   }}
-                ></TextField>
+                >
+                  <MenuItem value='BhutaneseCid'>BhutaneseCid</MenuItem>
+                  <MenuItem value='BhutanesePermit'>BhutanesePermit</MenuItem>
+                  <MenuItem value='Non_Bhutanese'>Non_Bhutanese</MenuItem>
+                </TextField>
               </Grid>
 
               <Grid item xs={12} sm={6}>
@@ -191,10 +202,10 @@ const UpdateUser = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' color='error' onClick={() => router.push('/user')}>
                   Cancel
                 </Button>
               </Grid>

@@ -25,17 +25,19 @@ import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/warnings-message'
 
 type schools = {
   id: string
   name: string
   dzongkhag: string
+  createdAt: string
 }
 
 const SchoolPage = () => {
   const router = useRouter()
   const [schoolData, setSchoolData] = useState<schools[]>([])
-
+  const [warningmessage, setWarningMessage] = useState('school')
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -83,6 +85,18 @@ const SchoolPage = () => {
     setOpenDeleteDialog(false)
     setSelectedId(null)
   }
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }
+    return new Date(dateString).toLocaleString('en-US', options)
+  }
   return (
     <>
       <ToastContainer />
@@ -113,16 +127,7 @@ const SchoolPage = () => {
             </div>
           </Box>
           <Link href='school/add' passHref>
-            <Button
-              variant='contained'
-              sx={{
-                background: 'green',
-                color: 'white',
-                '&:hover': {
-                  background: '#4caf50'
-                }
-              }}
-            >
+            <Button variant='contained' color='success'>
               Add
             </Button>
           </Link>
@@ -135,7 +140,8 @@ const SchoolPage = () => {
             <thead>
               <tr>
                 <th>Subject</th>
-                <th>Class</th>
+                <th>Dzongkhag</th>
+                <th>Created Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -155,7 +161,9 @@ const SchoolPage = () => {
                     <td className='!plb-1'>
                       <Typography>{row.dzongkhag}</Typography>
                     </td>
-
+                    <td className='!plb-1'>
+                      <Typography>{formatDate(row.createdAt)}</Typography>
+                    </td>
                     <td className='!plb-1'>
                       <Box
                         sx={{
@@ -164,30 +172,10 @@ const SchoolPage = () => {
                           gap: 1
                         }}
                       >
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'green',
-                            '&:hover': {
-                              background: '#4caf50'
-                            }
-                          }}
-                          onClick={() => handleEdit(row.id)}
-                        >
+                        <Button variant='contained' color='success' onClick={() => handleEdit(row.id)}>
                           Edit
                         </Button>
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'red',
-                            '&:hover': {
-                              background: '#ef5350'
-                            }
-                          }}
-                          onClick={() => handleDeleteClick(row.id)}
-                        >
+                        <Button variant='contained' color='error' onClick={() => handleDeleteClick(row.id)}>
                           Delete
                         </Button>
                       </Box>
@@ -203,15 +191,13 @@ const SchoolPage = () => {
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this school? This action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message={warningmessage} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color='primary'>
+          <Button onClick={handleCancelDelete} variant='contained' color='success'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color='error'>
+          <Button onClick={handleConfirmDelete} variant='contained' color='error'>
             Delete
           </Button>
         </DialogActions>

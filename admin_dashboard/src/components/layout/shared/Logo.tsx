@@ -32,9 +32,9 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
     <div className='flex items-center min-bs-[24px]'>
       {/* <MaterioLogo className='text-[22px] text-primary' /> */}
       {color === 'light' ? (
-        <img src='/images/logos/logo.png' alt='Logo2' width={40} height={40} />
+        <img src='/images/logos/logo.png' alt='Logo2' width={32} height={32} />
       ) : (
-        <img src='/images/logos/logo2.png' alt='Logo' width={40} height={40} />
+        <img src='/images/logos/logo.png' alt='Logo' width={32} height={32} />
       )}
       <LogoText color={color}>{themeConfig.templateName}</LogoText>
     </div>

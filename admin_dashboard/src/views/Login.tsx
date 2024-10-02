@@ -98,7 +98,7 @@ const Login = ({ mode }: { mode: Mode }) => {
           </Link>
           <div className='flex flex-col gap-5'>
             <div>
-              <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}!`}</Typography>
+              <Typography variant='h5'>{`Welcome to ${themeConfig.templateName}!`}</Typography>
             </div>
             <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-5'>
               <TextField autoFocus fullWidth label='Email' value={email} onChange={e => setEmail(e.target.value)} />

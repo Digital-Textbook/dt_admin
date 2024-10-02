@@ -7,6 +7,7 @@ import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import {
   Typography
 } from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
+import UpdateMessage from '@/components/shared/updated-warning'
 
 interface Classes {
   id: string
@@ -104,24 +106,7 @@ const UpdateSubject = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={12}>
-                <Typography
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    background: '#fff8e1',
-                    padding: '20px',
-                    color: '#FFB400',
-                    borderRadius: '16px',
-                    fontSize: '16px'
-                  }}
-                >
-                  <i className='ri-error-warning-line' style={{ fontSize: '28px', marginRight: '10px' }} />
-                  Please be advised that modifying the subject information may impact the system's subject-related
-                  functionalities. We urge you to proceed with caution and ensure you are fully confident in your
-                  changes before continuing.
-                </Typography>
-              </Grid>
+              <UpdateMessage message='subject' />
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='class'>Class</InputLabel>
                 <TextField
@@ -174,11 +159,11 @@ const UpdateSubject = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
 
-                <Button variant='contained' onClick={() => router.push('/subject')}>
+                <Button variant='contained' onClick={() => router.push('/subject')} color='error'>
                   Cancel
                 </Button>
               </Grid>

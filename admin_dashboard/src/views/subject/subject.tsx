@@ -1,12 +1,11 @@
 'use client'
-// MUI Imports
+
 import {
   Button,
   Card,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Typography,
   Box,
@@ -17,26 +16,25 @@ import {
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
-import Link from 'next/link'
 
-// Imports
 import React, { useState, useEffect } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/warnings-message'
 
 type subjects = {
   subjectName: string
   id: string
   className: string
   classId: string
+  createdAt: string
 }
 
 const SubjectPage = () => {
   const router = useRouter()
   const [subjectData, setsubjectData] = useState<subjects[]>([])
-
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -84,6 +82,18 @@ const SubjectPage = () => {
     setOpenDeleteDialog(false)
     setSelectedId(null)
   }
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }
+    return new Date(dateString).toLocaleString('en-US', options)
+  }
   return (
     <>
       <ToastContainer />
@@ -113,20 +123,10 @@ const SubjectPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='school/add' passHref>
-            <Button
-              variant='contained'
-              sx={{
-                background: 'green',
-                color: 'white',
-                '&:hover': {
-                  background: '#4caf50'
-                }
-              }}
-            >
-              Add
-            </Button>
-          </Link>
+
+          <Button variant='contained' color='success' onClick={() => router.push('/subject/add')}>
+            Add
+          </Button>
         </Box>
         <Divider />
       </Grid>
@@ -137,6 +137,7 @@ const SubjectPage = () => {
               <tr>
                 <th>Subject</th>
                 <th>Class</th>
+                <th>Created Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -156,39 +157,15 @@ const SubjectPage = () => {
                     <td className='!plb-1'>
                       <Typography>{row.className}</Typography>
                     </td>
-
                     <td className='!plb-1'>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: 1
-                        }}
-                      >
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'green',
-                            '&:hover': {
-                              background: '#4caf50'
-                            }
-                          }}
-                          onClick={() => handleEdit(row.id)}
-                        >
+                      <Typography>{formatDate(row.createdAt)}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                        <Button variant='contained' color='success' onClick={() => handleEdit(row.id)}>
                           Edit
                         </Button>
-                        <Button
-                          variant='contained'
-                          sx={{
-                            color: 'white',
-                            background: 'red',
-                            '&:hover': {
-                              background: '#ef5350'
-                            }
-                          }}
-                          onClick={() => handleDeleteClick(row.id)}
-                        >
+                        <Button variant='contained' color='error' onClick={() => handleDeleteClick(row.id)}>
                           Delete
                         </Button>
                       </Box>
@@ -204,15 +181,13 @@ const SubjectPage = () => {
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this subject? This action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message='subject' />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color='primary'>
+          <Button variant='contained' onClick={handleCancelDelete} color='success'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color='error'>
+          <Button variant='contained' onClick={handleConfirmDelete} color='error'>
             Delete
           </Button>
         </DialogActions>

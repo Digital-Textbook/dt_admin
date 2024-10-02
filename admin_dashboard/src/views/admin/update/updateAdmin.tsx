@@ -15,6 +15,7 @@ import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
+import UpdateMessage from '@/components/shared/updated-warning'
 
 type admin = {
   id: string
@@ -40,7 +41,6 @@ const UpdateAdmin = () => {
   const [mobileNo, setMobileNo] = useState('')
 
   const router = useRouter()
-
   const [user, setUser] = useState<admin[]>([])
   const [roleData, setRoleData] = useState<role[]>([])
   const searchParams = useSearchParams()
@@ -115,13 +115,13 @@ const UpdateAdmin = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <UpdateMessage message='admin' />
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='name'>Name</InputLabel>
                 <TextField
                   fullWidth
                   id='name'
                   name='name'
-                  placeholder='John Doe'
                   value={name}
                   required
                   onChange={e => setName(e.target.value)}
@@ -147,7 +147,7 @@ const UpdateAdmin = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-mail-send-line' />
                       </InputAdornment>
                     )
                   }}
@@ -173,7 +173,7 @@ const UpdateAdmin = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-shield-keyhole-line' />
                       </InputAdornment>
                     )
                   }}
@@ -199,7 +199,7 @@ const UpdateAdmin = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-book-line' />
+                        <i className='ri-user-follow-line' />
                       </InputAdornment>
                     )
                   }}
@@ -222,7 +222,7 @@ const UpdateAdmin = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-pages-line' />
+                        <i className='ri-phone-line' />
                       </InputAdornment>
                     )
                   }}
@@ -230,10 +230,10 @@ const UpdateAdmin = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' color='error' onClick={() => router.push('/roles')}>
                   Cancel
                 </Button>
               </Grid>
