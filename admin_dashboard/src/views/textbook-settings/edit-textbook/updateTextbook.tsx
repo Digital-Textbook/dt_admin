@@ -18,7 +18,6 @@ import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import UpdateMessage from '@/components/shared/updated-warning'
 
 type Subject = any
 
@@ -53,7 +52,7 @@ const UpdateTextbook = () => {
   useEffect(() => {
     const fetchClassData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/digital-textbook/common/subject')
+        const response = await axios.get('http://localhost:3001/Digital-textbook/common/subject/')
         setClassData(response.data)
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -68,7 +67,7 @@ const UpdateTextbook = () => {
   useEffect(() => {
     const fetchTextbookData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/digital-textbook/textbook/${id}/textbook-info`)
+        const response = await axios.get(`http://localhost:3001/Digital-textbook/textbook/${id}/textbook-details`)
         setTextbook(response.data)
         if (response.data) {
           setAuthor(response.data.author)
@@ -130,7 +129,7 @@ const UpdateTextbook = () => {
     }
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/textbook/${id}`, formData, {
+      const response = await axios.patch(`http://localhost:3001/Digital-textbook/textbook/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -155,7 +154,6 @@ const UpdateTextbook = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <UpdateMessage message='textbook' />
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='author'>Author</InputLabel>
                 <TextField
@@ -341,10 +339,10 @@ const UpdateTextbook = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit' color='success'>
+                <Button variant='contained' type='submit'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset' color='error' onClick={() => router.push('/textbook')}>
+                <Button variant='contained' type='reset'>
                   Cancel
                 </Button>
               </Grid>

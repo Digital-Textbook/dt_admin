@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
 import type { FormEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -52,14 +51,42 @@ const AddSchool = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/digital-textbook/school', { dzongkhagId, schoolName })
+      const response = await axios.post(
+        'http://localhost:3001/digital-textbook/school',
+        { dzongkhagId, schoolName },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('School uploaded successfully!')
       setTimeout(() => {
         router.push('/school')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading school. Please try again!')
-      console.error('Error uploading school:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create school!')
+              break
+            case 401:
+              toast.error('Unauthorized User!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input.')
+              break
+            default:
+              toast.error('An error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('An unexpected error occurred!')
+      }
     }
   }
 
@@ -129,7 +156,7 @@ const AddSchool = () => {
                 <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' color='error' onClick={() => router.push('/subject')}>
+                <Button variant='contained' color='error' onClick={() => router.push('/school')}>
                   Cancel
                 </Button>
               </Grid>

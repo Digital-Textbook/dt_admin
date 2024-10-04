@@ -76,8 +76,8 @@ const RoleSettingsPage = () => {
   }
 
   const roleColors: Record<string, string> = {
-    ADMIN: '#56CA00',
-    'SUPER ADMIN': '#e74c3c'
+    Admin: '#56CA00',
+    'Super Admin': '#e74c3c'
   }
 
   const getRoleColor = (role: string) => roleColors[role] || '#ffee58'

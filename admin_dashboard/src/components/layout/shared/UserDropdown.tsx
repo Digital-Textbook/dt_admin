@@ -1,30 +1,29 @@
 'use client'
 
-// React Imports
 import type { MouseEvent } from 'react'
 
-// MUI Imports
 import { styled } from '@mui/material/styles'
-import Badge from '@mui/material/Badge'
-import Avatar from '@mui/material/Avatar'
-import Popper from '@mui/material/Popper'
-import Fade from '@mui/material/Fade'
-import Paper from '@mui/material/Paper'
-import ClickAwayListener from '@mui/material/ClickAwayListener'
-import MenuList from '@mui/material/MenuList'
-import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
-import Button from '@mui/material/Button'
+import {
+  Avatar,
+  Badge,
+  MenuItem,
+  MenuList,
+  Popper,
+  ClickAwayListener,
+  Typography,
+  Divider,
+  Button,
+  Paper,
+  Fade
+} from '@mui/material'
 
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useRef, useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-// Styled component for badge content
 const BadgeContentSpan = styled('span')({
   width: 8,
   height: 8,
@@ -35,10 +34,7 @@ const BadgeContentSpan = styled('span')({
 })
 
 const UserDropdown = () => {
-  // States
   const [open, setOpen] = useState(false)
-
-  // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
 
   const handleDropdownOpen = () => {
@@ -59,12 +55,28 @@ const UserDropdown = () => {
 
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
 
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData')
     const userData = storedUserData ? JSON.parse(storedUserData) : null
     setUser(userData)
   }, [])
+
+  useEffect(() => {
+    const fetchAdminProfile = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/digital-textbook/auth/${user.id}`)
+        setProfile(response.data)
+      } catch (err) {
+        console.error('Error fetching textbook data:', err)
+      }
+    }
+
+    if (user && user.id) {
+      fetchAdminProfile()
+    }
+  }, [user])
 
   const handleLogout = async () => {
     localStorage.removeItem('adminAccessToken')
@@ -124,9 +136,9 @@ const UserDropdown = () => {
                     <Avatar alt='John Doe' src='/images/avatars/1.png' />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        {user?.name || 'No Name Available'}
+                        {profile?.name || 'No Name Available'}
                       </Typography>
-                      <Typography variant='caption'>{user?.role.name || 'No Roles Available'}</Typography>
+                      <Typography>{profile?.role.name || 'No Roles Available'}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />

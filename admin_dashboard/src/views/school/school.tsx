@@ -44,7 +44,11 @@ const SchoolPage = () => {
   useEffect(() => {
     const fetchSchoolData = async () => {
       try {
-        const response: AxiosResponse<schools[]> = await axios.get('http://localhost:3001/digital-textbook/school')
+        const response: AxiosResponse<schools[]> = await axios.get('http://localhost:3001/digital-textbook/school', {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         setSchoolData(response.data)
       } catch (err) {
         console.error('Error fetching school data:', err)
@@ -67,7 +71,11 @@ const SchoolPage = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/school/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/school/${selectedId}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         toast.success('School deleted successfully!')
         setTimeout(() => {
           window.location.reload()
