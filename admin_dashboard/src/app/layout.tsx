@@ -9,6 +9,7 @@ import '@/app/globals.css'
 
 // Generated Icon CSS Imports
 import '@assets/iconify-icons/generated-icons.css'
+import { SessionProvider } from './SessionContent'
 
 export const metadata = {
   title: 'Digital Textbook',
@@ -20,9 +21,14 @@ const RootLayout = ({ children }: ChildrenType) => {
   const direction = 'ltr'
 
   return (
-    <html id='__next' dir={direction}>
-      <body className='flex is-full min-bs-full flex-auto flex-col'>{children}</body>
-    </html>
+    // <html id='__next' dir={direction}>
+    //   <body className='flex is-full min-bs-full flex-auto flex-col'>{children}</body>
+    // </html>
+    <SessionProvider>
+      <html id='__next' dir={direction}>
+        <body className='flex is-full min-bs-full flex-auto flex-col'>{children}</body>
+      </html>
+    </SessionProvider>
   )
 }
 

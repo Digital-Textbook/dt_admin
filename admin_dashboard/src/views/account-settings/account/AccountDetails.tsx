@@ -67,6 +67,7 @@ const AccountDetails = () => {
       toast.success('Admin profile updated successfully!')
       setTimeout(() => {
         window.location.reload()
+        // router.push('/')
       }, 3000)
     } catch (error) {
       toast.error('Error while updating admin profile. Please try again!')
@@ -173,9 +174,9 @@ const AccountDetails = () => {
               <Button variant='contained' type='submit'>
                 Save
               </Button>
-              <Button variant='contained' type='reset' color='error'>
+              {/* <Button variant='contained' type='reset' color='error'>
                 Reset
-              </Button>
+              </Button> */}
             </Grid>
           </Grid>
         </form>

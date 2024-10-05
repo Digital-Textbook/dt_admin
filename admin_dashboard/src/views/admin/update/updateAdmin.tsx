@@ -97,7 +97,8 @@ const UpdateAdmin = () => {
       })
       toast.success('Admin updated successfully!')
       setTimeout(() => {
-        router.push('/roles')
+        // router.replace('/roles')
+        window.location.reload()
       }, 3000)
     } catch (error) {
       toast.error('Error while uploading admin. Please try again!')
