@@ -20,7 +20,7 @@ import axios, { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
-import WarningMessage from '@/components/shared/warnings-message'
+import WarningMessage from '@/components/shared/message/warnings-message'
 
 type Admin = {
   id: string

@@ -20,7 +20,7 @@ import axios, { AxiosResponse } from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
-import UpdateMessage from '@/components/shared/updated-warning'
+import UpdateMessage from '@/components/shared/message/updated-warning'
 
 interface Role {
   id: string

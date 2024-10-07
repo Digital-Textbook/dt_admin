@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 
 import axios from 'axios'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React, { useRef, useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'

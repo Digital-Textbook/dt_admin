@@ -22,7 +22,7 @@ import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import WarningMessage from '@/components/shared/warnings-message'
+import WarningMessage from '@/components/shared/message/warnings-message'
 
 type subjects = {
   subjectName: string

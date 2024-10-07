@@ -21,7 +21,7 @@ import {
   Typography
 } from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
-import UpdateMessage from '@/components/shared/updated-warning'
+import UpdateMessage from '@/components/shared/message/updated-warning'
 
 interface Classes {
   id: string

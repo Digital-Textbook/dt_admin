@@ -2,56 +2,31 @@
 
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  TextField
-} from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import { useRouter } from 'next/navigation'
-
-interface dzongkhags {
-  id: string
-  name: string
-}
+import CustomTextField from '@/components/shared/Input-field/TextField'
+import DzongkhagTextField from '@/components/shared/Dzongkhag/DzongkhagField'
 
 const AddSchool = () => {
   const [schoolName, setSchoolName] = useState('')
   const [dzongkhagId, setDzongkhagId] = useState('')
   const [dzongkhag, setDzongkhag] = useState('')
-  const [dzongkhagData, setDzongkhagData] = useState<dzongkhags[]>([])
   const router = useRouter()
-
+  const [user, setUser] = useState<any>(null)
   useEffect(() => {
-    const fetchDzongkhagData = async () => {
-      try {
-        const response: AxiosResponse<dzongkhags[]> = await axios.get(
-          'http://localhost:3001/digital-textbook/common/dzongkhag'
-        )
-        setDzongkhagData(response.data)
-      } catch (error) {
-        console.error('Error dzongkhag data from database!', error)
-        toast.error('Error while fetching dzongkhag data from database!')
-      }
-    }
-
-    fetchDzongkhagData()
+    const storedUserData = localStorage.getItem('userData')
+    const userData = storedUserData ? JSON.parse(storedUserData) : null
+    setUser(userData)
   }, [])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post(
+      await axios.post(
         'http://localhost:3001/digital-textbook/school',
         { dzongkhagId, schoolName },
         {
@@ -74,13 +49,14 @@ const AddSchool = () => {
               toast.error('User unauthorized. User does not have permission to create school!')
               break
             case 401:
-              toast.error('Unauthorized User!')
+              toast.error('Session expired. Please login again!')
+
               break
             case 400:
               toast.error('Bad request. Please check your input.')
               break
             default:
-              toast.error('An error occurred. Please try again later.')
+              toast.error('An unexpected error occurred. Please try again later.')
               break
           }
         }
@@ -101,56 +77,25 @@ const AddSchool = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='schoolName'>School</InputLabel>
-                <TextField
-                  fullWidth
-                  id='schoolName'
-                  name='schoolName'
-                  value={schoolName}
-                  required
-                  onChange={e => setSchoolName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-graduation-cap-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='School'
+                label='School'
+                id='schoolName'
+                name='schoolName'
+                value={schoolName}
+                required
+                onChange={e => setSchoolName(e.target.value)}
+                icon='ri-graduation-cap-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='dzongkhag'>Dzongkhag</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='dzongkhag'
-                  name='dzongkhag'
-                  value={dzongkhag}
-                  required
-                  onChange={e => {
-                    const selectedDzongkhag = dzongkhagData.find(dzo => dzo.name === e.target.value)
-                    if (selectedDzongkhag) {
-                      setDzongkhag(e.target.value)
-                      setDzongkhagId(selectedDzongkhag.id)
-                    }
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-map-pin-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  {dzongkhagData.map(dzo => (
-                    <MenuItem key={dzo.id} value={dzo.name}>
-                      {dzo.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
+              <DzongkhagTextField
+                value={dzongkhag}
+                required
+                onChange={(dzongkhagId, dzongkhagName) => {
+                  setDzongkhag(dzongkhagName)
+                  setDzongkhagId(dzongkhagId)
+                }}
+              />
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit' color='success'>

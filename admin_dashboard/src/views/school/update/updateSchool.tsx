@@ -19,7 +19,7 @@ import {
   TextField
 } from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
-import UpdateMessage from '@/components/shared/updated-warning'
+import UpdateMessage from '@/components/shared/message/updated-warning'
 
 interface dzongkhags {
   id: string

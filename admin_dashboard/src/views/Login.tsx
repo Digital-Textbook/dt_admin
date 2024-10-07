@@ -1,13 +1,12 @@
 'use client'
 
-// React Imports
 import React, { useState } from 'react'
 import type { FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import { useSession } from '@/app/SessionContent'
 
-// MUI Imports
 import {
   Button,
   Card,
@@ -35,6 +34,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   const [password, setPassword] = useState('')
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const router = useRouter()
+  const { setAccessToken, setUser } = useSession()
 
   // Vars
   const darkImg = '/images/pages/auth-v1-mask-dark.png'
@@ -55,10 +55,15 @@ const Login = ({ mode }: { mode: Mode }) => {
         setTimeout(() => {
           router.push('/')
         }, 3000)
-        localStorage.setItem('adminAccessToken', response.data.adminAccessToken)
-        localStorage.setItem('userData', JSON.stringify(response.data.existingAdmin))
-        const storedUserData = localStorage.getItem('userData')
-        const userData = storedUserData ? JSON.parse(storedUserData) : null
+        // localStorage.setItem('adminAccessToken', response.data.adminAccessToken)
+        // localStorage.setItem('userData', JSON.stringify(response.data.existingAdmin))
+        // const storedUserData = localStorage.getItem('userData')
+        // const userData = storedUserData ? JSON.parse(storedUserData) : null
+        setAccessToken(response.data.adminAccessToken)
+        setUser(response.data.existingAdmin)
+        setTimeout(() => {
+          router.push('/')
+        }, 3000)
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -1,12 +1,11 @@
 'use client'
-// MUI Imports
+
 import {
   Button,
   Card,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Typography,
   Box,
@@ -17,15 +16,13 @@ import {
 
 // Styles Imports
 import tableStyles from '@core/styles/table.module.css'
-import Link from 'next/link'
 
-// Imports
 import React, { useState, useEffect } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import WarningMessage from '@/components/shared/warnings-message'
+import WarningMessage from '@/components/shared/message/warnings-message'
 
 type schools = {
   id: string
@@ -134,11 +131,10 @@ const SchoolPage = () => {
               <div className='whitespace-nowrap select-none text-textDisabled'>Search</div>
             </div>
           </Box>
-          <Link href='school/add' passHref>
-            <Button variant='contained' color='success'>
-              Add
-            </Button>
-          </Link>
+
+          <Button variant='contained' color='success' onClick={() => router.push('/school/add')}>
+            Add
+          </Button>
         </Box>
         <Divider />
       </Grid>

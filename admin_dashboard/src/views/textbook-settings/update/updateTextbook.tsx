@@ -18,7 +18,7 @@ import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import UpdateMessage from '@/components/shared/updated-warning'
+import UpdateMessage from '@/components/shared/message/updated-warning'
 
 type Subject = any
 

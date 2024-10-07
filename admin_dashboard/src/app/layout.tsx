@@ -9,12 +9,12 @@ import '@/app/globals.css'
 
 // Generated Icon CSS Imports
 import '@assets/iconify-icons/generated-icons.css'
-import { SessionProvider } from './SessionContent'
-
 export const metadata = {
   title: 'Digital Textbook',
   description: 'Developed By Rom Tech'
 }
+
+import { SessionProvider } from './SessionContent'
 
 const RootLayout = ({ children }: ChildrenType) => {
   // Vars
