@@ -1,20 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
-
-import { Divider, InputLabel, MenuItem, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Button, Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import CustomTextField from '@/components/shared/Input-field/TextField'
 
 const AddPermissionSettingd = () => {
   const [permissionName, setPermissionName] = useState('')
@@ -26,7 +19,7 @@ const AddPermissionSettingd = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/digital-textbook/permission', {
+      await axios.post('http://localhost:3001/digital-textbook/permission', {
         permissionName,
         action,
         subject
@@ -52,104 +45,62 @@ const AddPermissionSettingd = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='permissionName'>Permission Name</InputLabel>
-                <TextField
-                  fullWidth
-                  id='permissionName'
-                  name='permissionName'
-                  placeholder=''
-                  value={permissionName}
-                  required
-                  onChange={e => setPermissionName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-edit-2-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <Typography
-                  mt={3}
-                  sx={{
-                    background: '#fff8e1',
-                    padding: '20px',
-                    color: '#FFB400',
-                    borderRadius: '16px',
-                    fontSize: '14px'
-                  }}
-                >
-                  Permission Name specifies the action a role is allowed to perform, such as "Create User". It should be
-                  clear and descriptive to ensure proper access control and avoid confusion.
-                </Typography>
-              </Grid>
+              <CustomTextField
+                title='Permission Name'
+                label='Permission Name'
+                id='permissionName'
+                name='permissionName'
+                value={permissionName}
+                required
+                onChange={e => setPermissionName(e.target.value)}
+                icon='ri-edit-2-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='action'>Action</InputLabel>
-                <TextField
-                  fullWidth
-                  id='action'
-                  name='action'
-                  placeholder=''
-                  value={action}
-                  required
-                  onChange={e => setAction(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-3-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <Typography
-                  mt={3}
-                  sx={{
-                    background: '#fff8e1',
-                    padding: '20px',
-                    color: '#FFB400',
-                    borderRadius: '16px',
-                    fontSize: '14px'
-                  }}
-                >
-                  The `action` field defines what kind of operation can be performed. Common actions are based on CRUD
-                  (Create, Read, Update, Delete)
-                </Typography>
-              </Grid>
+              <CustomTextField
+                title='Action'
+                label='Action'
+                id='action'
+                name='action'
+                value={action}
+                required
+                onChange={e => setAction(e.target.value)}
+                icon='ri-book-3-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='subject'>Subject</InputLabel>
-                <TextField
-                  fullWidth
-                  id='subject'
-                  name='subject'
-                  placeholder=''
-                  value={subject}
-                  required
-                  onChange={e => setSubject(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-3-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <Typography
-                  mt={3}
-                  sx={{
-                    background: '#fff8e1',
-                    padding: '20px',
-                    color: '#FFB400',
-                    borderRadius: '16px',
-                    fontSize: '14px'
-                  }}
-                >
-                  The `subject` field defines the resource or entity on which the `action` can be performed. It
-                  represents the domain or the object that is being accessed or manipulated.
-                </Typography>
-              </Grid>
+              <CustomTextField
+                title='Subject'
+                label='Subject'
+                id='subject'
+                name='subject'
+                value={subject}
+                required
+                onChange={e => setSubject(e.target.value)}
+                icon='ri-book-3-line'
+              />
+              <Typography
+                ml={5}
+                mt={5}
+                sx={{
+                  background: '#fff8e1',
+                  padding: '20px',
+                  color: '#FFB400',
+                  borderRadius: '16px',
+                  fontSize: '14px'
+                }}
+              >
+                <strong>1. Permission Name:</strong> Specifies the action a role is authorized to perform, such as
+                "Create User." It should be concise yet descriptive to ensure clarity in access control and prevent any
+                misinterpretation.
+                <br />
+                <br />
+                <strong>2. Action Field:</strong> Defines the specific operation that can be executed. Common actions
+                align with CRUD operations: Create, Read, Update, and Delete.
+                <br />
+                <br />
+                <strong>3. Subject Field:</strong> Represents the entity or resource on which the action is to be
+                applied. This refers to the domain object being accessed or modified, ensuring precise control over
+                permissible operations.
+              </Typography>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit' color='success'>

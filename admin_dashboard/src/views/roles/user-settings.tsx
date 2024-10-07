@@ -172,7 +172,7 @@ const RoleSettingsPage = () => {
                     </td>
 
                     <td>
-                      <Typography>{row.role.name}</Typography>
+                      <Typography>{row.role?.name || 'N/A'}</Typography>
                     </td>
 
                     <td className='!pb-1'>

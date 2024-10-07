@@ -1,26 +1,14 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
-
-import { Divider, InputLabel, MenuItem } from '@mui/material'
+import { useState } from 'react'
+import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import type { FormEvent } from 'react'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useRouter, useSearchParams } from 'next/navigation'
-
-type role = {
-  id: string
-  name: string
-  description: string
-}
+import { useRouter } from 'next/navigation'
+import CustomTextField from '@/components/shared/Input-field/TextField'
+import RoleSelectField from '@/components/shared/role/RoleSelectField'
 
 const AddAdmin = () => {
   const [name, setName] = useState('')
@@ -31,29 +19,11 @@ const AddAdmin = () => {
 
   const router = useRouter()
 
-  const [roleData, setRoleData] = useState<role[]>([])
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id')
-
-  useEffect(() => {
-    const fetchRoleData = async () => {
-      try {
-        const response: AxiosResponse<role[]> = await axios.get('http://localhost:3001/digital-textbook/role')
-        setRoleData(response.data)
-      } catch (err) {
-        console.error('Error fetching role data:', err)
-        toast.error('Error while fetching role data!')
-      }
-    }
-
-    fetchRoleData()
-  }, [])
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post(`http://localhost:3001/digital-textbook/admin/register`, {
+      await axios.post(`http://localhost:3001/digital-textbook/admin/register`, {
         name,
         email,
         mobileNo,
@@ -79,98 +49,50 @@ const AddAdmin = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <TextField
-                  fullWidth
-                  id='name'
-                  name='name'
-                  value={name}
-                  required
-                  onChange={e => setName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-3-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Name'
+                label='Name'
+                id='name'
+                name='name'
+                value={name}
+                required
+                onChange={e => setName(e.target.value)}
+                icon='ri-user-3-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='email'>Email</InputLabel>
-                <TextField
-                  fullWidth
-                  id='email'
-                  name='email'
-                  value={email}
-                  required
-                  onChange={e => setEmail(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-mail-send-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Email'
+                label='Email'
+                id='email'
+                name='email'
+                value={email}
+                required
+                onChange={e => setEmail(e.target.value)}
+                icon='ri-mail-send-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='roleName'>Role</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='roleName'
-                  name='roleName'
-                  value={roleName}
-                  required
-                  onChange={e => {
-                    const selectedRole = roleData.find(rls => rls.name === e.target.value)
-                    if (selectedRole) {
-                      setRoleName(e.target.value)
-                      setRoleId(selectedRole.id)
-                    }
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-shield-keyhole-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  {roleData.map(role => (
-                    <MenuItem key={role.id} value={role.name}>
-                      {role.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
+              <RoleSelectField
+                value={roleName}
+                required
+                onChange={(roleId, roleName) => {
+                  setRoleName(roleName)
+                  setRoleId(roleId)
+                }}
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='mobileNo'>Mobile No.</InputLabel>
-                <TextField
-                  fullWidth
-                  id='mobileNo'
-                  name='mobileNo'
-                  placeholder=''
-                  value={mobileNo}
-                  required
-                  onChange={e => setMobileNo(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-phone-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Mobile No.'
+                label='Mobile No.'
+                id='mobileNo'
+                name='mobileNo'
+                value={mobileNo}
+                required
+                onChange={e => setMobileNo(e.target.value)}
+                icon='ri-phone-line'
+              />
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
                 <Button variant='contained' color='error' onClick={() => router.push('/roles')}>

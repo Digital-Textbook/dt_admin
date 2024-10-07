@@ -1,38 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  TextField
-} from '@mui/material'
+import { useState } from 'react'
+import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import CustomTextField from '@/components/shared/Input-field/TextField'
 
 const AddRoleSettings = () => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-
   const router = useRouter()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/digital-textbook/role', {
-        name,
-        description
-      })
+      await axios.post('http://localhost:3001/digital-textbook/role', { name, description })
       toast.success('Role added successfully!')
       setTimeout(() => {
         router.push('/roles')
@@ -54,51 +40,33 @@ const AddRoleSettings = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='name'>Role</InputLabel>
-                <TextField
-                  fullWidth
-                  id='name'
-                  name='name'
-                  placeholder=''
-                  value={name}
-                  required
-                  onChange={e => setName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-add-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Role'
+                label='Role'
+                id='name'
+                name='name'
+                value={name}
+                required
+                onChange={e => setName(e.target.value)}
+                icon='ri-user-add-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='Description'>Description</InputLabel>
-                <TextField
-                  fullWidth
-                  id='description'
-                  name='description'
-                  placeholder=''
-                  value={description}
-                  required
-                  onChange={e => setDescription(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-edit-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Description'
+                label='Description'
+                id='description'
+                name='description'
+                value={description}
+                required
+                onChange={e => setDescription(e.target.value)}
+                icon='ri-edit-line'
+              />
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset'>
+                <Button variant='contained' type='reset' color='error' onClick={() => router.push('/roles')}>
                   Cancel
                 </Button>
               </Grid>

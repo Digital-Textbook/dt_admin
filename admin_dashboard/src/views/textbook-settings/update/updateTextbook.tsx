@@ -18,7 +18,7 @@ import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import UpdateMessage from '@/components/shared/message/updated-warning'
+import CustomTextField from '@/components/shared/Input-field/TextField'
 
 type Subject = any
 
@@ -45,15 +45,15 @@ const UpdateTextbook = () => {
   const [classData, setClassData] = useState<SubjectAndClass[]>([])
   const [filteredSubjects, setFilteredSubjects] = useState<SubjectAndClass[]>([])
   const [textbook, setTextbook] = useState<SubjectAndClass[]>([])
+
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
-
   const router = useRouter()
 
   useEffect(() => {
     const fetchClassData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/digital-textbook/common/subject')
+        const response = await axios.get('http://localhost:3001/Digital-textbook/common/subject/')
         setClassData(response.data)
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -64,11 +64,10 @@ const UpdateTextbook = () => {
     fetchClassData()
   }, [])
 
-  /// Fetch data for update
   useEffect(() => {
     const fetchTextbookData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/digital-textbook/textbook/${id}/textbook-info`)
+        const response = await axios.get(`http://localhost:3001/Digital-textbook/textbook/${id}/textbook-info`)
         setTextbook(response.data)
         if (response.data) {
           setAuthor(response.data.author)
@@ -130,7 +129,7 @@ const UpdateTextbook = () => {
     }
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/textbook/${id}`, formData, {
+      await axios.patch(`http://localhost:3001/Digital-textbook/textbook/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -155,46 +154,27 @@ const UpdateTextbook = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <UpdateMessage message='textbook' />
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='author'>Author</InputLabel>
-                <TextField
-                  fullWidth
-                  id='author'
-                  name='author'
-                  placeholder='John Doe'
-                  value={author || ''}
-                  required
-                  onChange={e => setAuthor(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-3-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Author'
+                label='Author'
+                id='author'
+                name='author'
+                value={author || ''}
+                required
+                onChange={e => setAuthor(e.target.value)}
+                icon='ri-user-3-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='chapter'>Chapter</InputLabel>
-                <TextField
-                  fullWidth
-                  id='chapter'
-                  name='chapter'
-                  placeholder='8'
-                  value={chapter || ''}
-                  required
-                  onChange={e => setChapter(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Chapter'
+                label='Chapter'
+                id='chapter'
+                name='chapter'
+                value={chapter || ''}
+                required
+                onChange={e => setChapter(e.target.value)}
+                icon='ri-book-line'
+              />
 
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='class'>Class</InputLabel>
@@ -229,7 +209,7 @@ const UpdateTextbook = () => {
                   fullWidth
                   id='subject'
                   name='subject'
-                  value={subject || ''}
+                  value={filteredSubjects.some(subj => subj.subjectName === subject) ? subject : ''}
                   required
                   onChange={e => {
                     const selectedSubject = filteredSubjects.find(subj => subj.subjectName === e.target.value)
@@ -258,44 +238,27 @@ const UpdateTextbook = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='totalPages'>Pages</InputLabel>
-                <TextField
-                  fullWidth
-                  id='totalPages'
-                  name='totalPages'
-                  placeholder='240'
-                  value={totalPages || ''}
-                  required
-                  onChange={e => setTotalPages(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-pages-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='TotalPages'
+                label='TotalPages'
+                id='totalPages'
+                name='totalPages'
+                value={totalPages || ''}
+                required
+                onChange={e => setTotalPages(e.target.value)}
+                icon='ri-pages-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='edition'>Edition</InputLabel>
-                <TextField
-                  fullWidth
-                  id='edition'
-                  name='edition'
-                  value={edition || ''}
-                  required
-                  onChange={e => setEdition(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-contacts-book-3-fill' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Edition'
+                label='Edition'
+                id='edition'
+                name='edition'
+                value={edition || ''}
+                required
+                onChange={e => setEdition(e.target.value)}
+                icon='ri-contacts-book-3-fill'
+              />
 
               <Grid item xs={12}>
                 <InputLabel htmlFor='summary'>Summary</InputLabel>
@@ -344,7 +307,7 @@ const UpdateTextbook = () => {
                 <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset' color='error' onClick={() => router.push('/textbook')}>
+                <Button variant='contained' type='reset' color='error'>
                   Cancel
                 </Button>
               </Grid>

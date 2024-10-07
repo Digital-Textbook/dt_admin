@@ -11,6 +11,7 @@ import {
   DialogTitle,
   Divider,
   Grid,
+  IconButton,
   Typography
 } from '@mui/material'
 import Link from 'next/link'
@@ -21,6 +22,7 @@ import axios, { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import WarningMessage from '@/components/shared/message/warnings-message'
 
 type Role = {
   id: string
@@ -195,15 +197,13 @@ const RoleSettingsPage = () => {
                     </td>
 
                     <td className='!pb-1'>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          gap: 3
-                        }}
-                      >
-                        {<i className='ri-edit-line' onClick={() => handleEditClick(row.id)} />}
-                        {<i className='ri-delete-bin-line' onClick={() => handleDeleteClick(row.id)} />}
-                      </Box>
+                      <IconButton aria-label='copy' onClick={() => handleEditClick(row.id)}>
+                        <i className='ri-edit-line' />
+                      </IconButton>
+
+                      <IconButton aria-label='copy' onClick={() => handleDeleteClick(row.id)}>
+                        <i className='ri-delete-bin-line' />
+                      </IconButton>
                     </td>
                   </tr>
                 ))
@@ -216,15 +216,13 @@ const RoleSettingsPage = () => {
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this permission? This action cannot be undone.
-          </DialogContentText>
+          <WarningMessage message='permission' />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color='primary'>
+          <Button onClick={handleCancelDelete} color='success' variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color='error'>
+          <Button onClick={handleConfirmDelete} color='error' variant='contained'>
             Delete
           </Button>
         </DialogActions>

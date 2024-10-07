@@ -18,6 +18,7 @@ import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
+import CustomTextField from '@/components/shared/Input-field/TextField'
 
 type Subject = any
 
@@ -124,43 +125,27 @@ const AddTextbook = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='author'>Author</InputLabel>
-                <TextField
-                  fullWidth
-                  id='author'
-                  name='author'
-                  value={author}
-                  required
-                  onChange={e => setAuthor(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-3-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Author'
+                label='Author'
+                id='author'
+                name='author'
+                value={author}
+                required
+                onChange={e => setAuthor(e.target.value)}
+                icon='ri-user-3-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='chapter'>Chapter</InputLabel>
-                <TextField
-                  fullWidth
-                  id='chapter'
-                  name='chapter'
-                  value={chapter}
-                  required
-                  onChange={e => setChapter(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Chapter'
+                label='Chapter'
+                id='chapter'
+                name='chapter'
+                value={chapter}
+                required
+                onChange={e => setChapter(e.target.value)}
+                icon='ri-book-line'
+              />
 
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='class'>Class</InputLabel>
@@ -224,43 +209,27 @@ const AddTextbook = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='totalPages'>Pages</InputLabel>
-                <TextField
-                  fullWidth
-                  id='totalPages'
-                  name='totalPages'
-                  value={totalPages}
-                  required
-                  onChange={e => setTotalPages(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-pages-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Pages'
+                label='Pages'
+                id='totalPages'
+                name='totalPages'
+                value={totalPages}
+                required
+                onChange={e => setTotalPages(e.target.value)}
+                icon='ri-pages-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='edition'>Edition</InputLabel>
-                <TextField
-                  fullWidth
-                  id='edition'
-                  name='edition'
-                  value={edition}
-                  required
-                  onChange={e => setEdition(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-contacts-book-3-fill' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Edition'
+                label='Edition'
+                id='edition'
+                name='edition'
+                value={edition}
+                required
+                onChange={e => setEdition(e.target.value)}
+                icon='ri-contacts-book-3-fill'
+              />
 
               <Grid item xs={12}>
                 <InputLabel htmlFor='summary'>Summary</InputLabel>

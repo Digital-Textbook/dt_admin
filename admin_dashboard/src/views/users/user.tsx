@@ -29,6 +29,7 @@ type UserData = {
   cidNo: string
   mobileNo: string
   userType: string
+  status: string
   email: string
 }
 
@@ -51,6 +52,8 @@ const UserTable = () => {
     }
     fetchUserData()
   }, [])
+
+  console.log('User table data::', userData)
 
   const handleEdit = (id: string) => {
     router.push(`/user/update?id=${id}`)
@@ -126,6 +129,7 @@ const UserTable = () => {
                 <th>Mobile No.</th>
                 <th>Email</th>
                 <th>User Type</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -151,6 +155,9 @@ const UserTable = () => {
                       </td>
                       <td className='!plb-1'>
                         <Typography>{row.email}</Typography>
+                      </td>
+                      <td className='!plb-1'>
+                        <Typography>{row.status}</Typography>
                       </td>
                       <td className='!plb-1'>
                         <Typography>{row.userType}</Typography>

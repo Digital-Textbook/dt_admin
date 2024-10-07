@@ -1,14 +1,15 @@
-import Award from '@views/dashboard/Award'
-import Transactions from '@views/dashboard/Transactions'
-import WeeklyOverview from '@views/dashboard/WeeklyOverview'
-import TotalEarning from '@views/dashboard/TotalEarning'
-import LineChart from '@views/dashboard/LineChart'
-import DistributedColumnChart from '@views/dashboard/DistributedColumnChart'
-import DepositWithdraw from '@views/dashboard/DepositWithdraw'
-import SalesByCountries from '@views/dashboard/SalesByCountries'
+import Award from '@/views/dashboard/template/Award'
+import Transactions from '@views/dashboard/template/Transactions'
+import WeeklyOverview from '@/views/dashboard/template/WeeklyOverview'
+import TotalEarning from '@/views/dashboard/template/TotalEarning'
+import LineChart from '@/views/dashboard/template/LineChart'
+import DistributedColumnChart from '@/views/dashboard/template/DistributedColumnChart'
+import DepositWithdraw from '@/views/dashboard/template/DepositWithdraw'
+import SalesByCountries from '@/views/dashboard/template/SalesByCountries'
 import CardStatVertical from '@components/card-statistics/Vertical'
-import Table from '@views/dashboard/Table'
 import { Grid } from '@mui/material'
+
+import Overview from '@/views/dashboard/Overview'
 
 const DashboardPage = () => {
   return (
@@ -17,7 +18,7 @@ const DashboardPage = () => {
         <Award />
       </Grid>
       <Grid item xs={12} md={8} lg={8}>
-        <Transactions />
+        <Overview />
       </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <WeeklyOverview />
@@ -62,9 +63,6 @@ const DashboardPage = () => {
       </Grid>
       <Grid item xs={12} lg={8}>
         <DepositWithdraw />
-      </Grid>
-      <Grid item xs={12}>
-        <Table />
       </Grid>
     </Grid>
   )

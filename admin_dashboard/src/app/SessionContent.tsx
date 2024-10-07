@@ -22,9 +22,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const payload = JSON.parse(atob(token.split('.')[1]))
     const expirationTime = payload.exp * 1000
 
+    // Logout 1 minute (60000ms) before the actual expiration time
+    const logoutTime = expirationTime - Date.now() - 60000
+
     const timeoutId = setTimeout(() => {
       handleLogout()
-    }, expirationTime - Date.now())
+    }, logoutTime)
 
     if (expirationTimeout) {
       clearTimeout(expirationTimeout)
@@ -50,10 +53,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         // Token is expired, trigger logout
         handleLogout()
       } else {
-        // Set timeout to automatically log out when the session expires
+        // Set timeout to automatically log out just before the session expires
+        const logoutTime = expirationTime - Date.now() - 60000 // 1 minute before expiration
         const timeoutId = setTimeout(() => {
           handleLogout()
-        }, expirationTime - Date.now())
+        }, logoutTime)
 
         setExpirationTimeout(timeoutId)
       }
@@ -70,7 +74,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const handleLogout = async () => {
     try {
-      console.log('User Data::', user)
+      console.log('User Data before logout::', user)
 
       localStorage.removeItem('adminAccessToken')
       localStorage.removeItem('userData')
@@ -78,7 +82,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         await axios.post(`http://localhost:3001/digital-textbook/auth/${user.id}/admin-logout`)
       }
       setUser(null)
-      toast.success('You have been logged out due to session expiration.')
+      toast.success('Session expired. You have been logged out.')
       router.push('/login')
     } catch (error) {
       console.error('Error during logout:', error)

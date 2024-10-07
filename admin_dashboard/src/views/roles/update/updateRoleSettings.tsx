@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
-
 import {
   Button,
   Card,
@@ -11,9 +10,6 @@ import {
   Divider,
   FormControlLabel,
   Grid,
-  InputAdornment,
-  InputLabel,
-  TextField,
   Typography
 } from '@mui/material'
 import axios, { AxiosResponse } from 'axios'
@@ -21,6 +17,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import UpdateMessage from '@/components/shared/message/updated-warning'
+import CustomTextField from '@/components/shared/Input-field/TextField'
 
 interface Role {
   id: string
@@ -135,7 +132,7 @@ const UpdateRoleSettings = () => {
     <>
       <Card>
         <ToastContainer />
-        <Grid item xs={12} sx={{ marginBottom: 5 }}>
+        <Grid item xs={12} mb={5}>
           <CardHeader title='Update Role' />
           <Divider />
         </Grid>
@@ -143,45 +140,27 @@ const UpdateRoleSettings = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
               <UpdateMessage message='role' />
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='name'>Role</InputLabel>
-                <TextField
-                  fullWidth
-                  id='name'
-                  name='name'
-                  placeholder=''
-                  value={name}
-                  required
-                  onChange={e => setName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-add-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Role'
+                label='Role'
+                id='name'
+                name='name'
+                value={name || ''}
+                required
+                onChange={e => setName(e.target.value)}
+                icon='ri-user-add-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='Description'>Description</InputLabel>
-                <TextField
-                  fullWidth
-                  id='description'
-                  name='description'
-                  placeholder=''
-                  value={description}
-                  required
-                  onChange={e => setDescription(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-edit-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Description'
+                label='Description'
+                id='description'
+                name='description'
+                value={description || ''}
+                required
+                onChange={e => setDescription(e.target.value)}
+                icon='ri-edit-line'
+              />
 
               <Grid item xs={12}>
                 <Typography variant='h5' mb={3}>
