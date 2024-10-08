@@ -14,10 +14,10 @@ import Overview from '@/views/dashboard/Overview'
 const DashboardPage = () => {
   return (
     <Grid container spacing={6}>
-      <Grid item xs={12} md={4}>
+      {/* <Grid item xs={12} md={4}>
         <Award />
-      </Grid>
-      <Grid item xs={12} md={8} lg={8}>
+      </Grid> */}
+      <Grid item xs={12} md={12}>
         <Overview />
       </Grid>
       <Grid item xs={12} md={6} lg={4}>

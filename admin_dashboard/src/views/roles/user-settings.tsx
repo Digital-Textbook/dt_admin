@@ -11,6 +11,7 @@ import {
   DialogTitle,
   Divider,
   Grid,
+  IconButton,
   Typography
 } from '@mui/material'
 import tableStyles from '@core/styles/table.module.css'
@@ -191,16 +192,33 @@ const RoleSettingsPage = () => {
                       <Typography>{row.mobileNo}</Typography>
                     </td>
                     <td className='!pb-1'>
-                      <Box
+                      <IconButton
+                        aria-label='edit'
+                        onClick={() => handleEdit(row.id)}
                         sx={{
-                          display: 'flex',
-                          gap: 3,
-                          cursor: 'pointer'
+                          backgroundColor: '#e8f5e9',
+                          color: '#4caf50',
+                          '&:hover': {
+                            backgroundColor: '#388e3c'
+                          }
                         }}
                       >
-                        <i className='ri-edit-line' onClick={() => handleEdit(row.id)} />
-                        <i className='ri-delete-bin-line' onClick={() => handleDelete(row.id)} />
-                      </Box>
+                        <i className='ri-edit-line' />
+                      </IconButton>
+
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => handleDelete(row.id)}
+                        sx={{
+                          backgroundColor: '#ffebee',
+                          color: '#f44336',
+                          '&:hover': {
+                            backgroundColor: '#d32f2f'
+                          }
+                        }}
+                      >
+                        <i className='ri-delete-bin-line' />
+                      </IconButton>
                     </td>
                   </tr>
                 ))

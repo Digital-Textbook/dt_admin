@@ -44,6 +44,18 @@ const data: DataType[] = [
     color: 'info',
     title: 'Revenue',
     icon: 'ri-money-dollar-circle-line'
+  },
+  {
+    stats: '245k',
+    title: 'Textbook',
+    color: 'primary',
+    icon: 'ri-pie-chart-2-line'
+  },
+  {
+    stats: '245k',
+    title: 'Subject',
+    color: 'primary',
+    icon: 'ri-book-line'
   }
 ]
 
@@ -55,15 +67,14 @@ const Overview = () => {
         action={<OptionMenu iconClassName='text-textPrimary' options={['Refresh', 'Share', 'Update']} />}
         subheader={
           <p className='mbs-3'>
-            <span className='font-medium text-textPrimary'>Total 48.5% Growth 😎</span>
-            <span className='text-textSecondary'>this month</span>
+            <span className='font-medium text-textPrimary'>Total 48.5% Growth 😎 this month</span>
           </p>
         }
       />
       <CardContent className='!pbs-5'>
-        <Grid container spacing={2}>
+        <Grid container spacing={6}>
           {data.map((item, index) => (
-            <Grid item xs={6} md={3} key={index}>
+            <Grid item xs={6} md={2} key={index}>
               <div className='flex items-center gap-3'>
                 <CustomAvatar variant='rounded' color={item.color} className='shadow-xs'>
                   <i className={item.icon}></i>

@@ -17,12 +17,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const router = useRouter()
   const [expirationTimeout, setExpirationTimeout] = useState<NodeJS.Timeout | null>(null)
 
-  // Function to set access token and handle expiration
   const setAccessToken = (token: string) => {
     const payload = JSON.parse(atob(token.split('.')[1]))
     const expirationTime = payload.exp * 1000
 
-    // Logout 1 minute (60000ms) before the actual expiration time
     const logoutTime = expirationTime - Date.now() - 60000
 
     const timeoutId = setTimeout(() => {
@@ -37,23 +35,22 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem('adminAccessToken', token)
   }
 
-  // Effect to load user data and check session expiration
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData')
     const userData = storedUserData ? JSON.parse(storedUserData) : null
     setUser(userData)
 
-    // Check if access token exists and is valid
     const token = localStorage.getItem('adminAccessToken')
     if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]))
       const expirationTime = payload.exp * 1000
 
+      // console.log('Payload::', payload)
+      // console.log('Expiration Time::', expirationTime)
+
       if (Date.now() >= expirationTime) {
-        // Token is expired, trigger logout
         handleLogout()
       } else {
-        // Set timeout to automatically log out just before the session expires
         const logoutTime = expirationTime - Date.now() - 60000 // 1 minute before expiration
         const timeoutId = setTimeout(() => {
           handleLogout()
@@ -74,16 +71,19 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const handleLogout = async () => {
     try {
-      console.log('User Data before logout::', user)
+      const userData = localStorage.getItem('userData')
+      const user = userData ? JSON.parse(userData) : null
 
+      await axios.post(`http://localhost:3001/digital-textbook/auth/${user.id}/admin-logout`)
+
+      setUser(null)
       localStorage.removeItem('adminAccessToken')
       localStorage.removeItem('userData')
-      if (user?.id) {
-        await axios.post(`http://localhost:3001/digital-textbook/auth/${user.id}/admin-logout`)
-      }
-      setUser(null)
+
       toast.success('Session expired. You have been logged out.')
-      router.push('/login')
+      setTimeout(() => {
+        router.push('/login')
+      }, 3000)
     } catch (error) {
       console.error('Error during logout:', error)
       toast.error('Error occurred during logout.')
