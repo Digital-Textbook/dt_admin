@@ -62,20 +62,49 @@ const UpdateAdmin = () => {
     e.preventDefault()
 
     try {
-      await axios.patch(`http://localhost:3001/digital-textbook/admin/${id}`, {
-        name,
-        email,
-        roleId,
-        status,
-        mobileNo
-      })
+      await axios.patch(
+        `http://localhost:3001/digital-textbook/admin/${id}`,
+        {
+          name,
+          email,
+          roleId,
+          status,
+          mobileNo
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('Admin updated successfully!')
       setTimeout(() => {
         router.replace('/roles')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading admin. Please try again!')
-      console.error('Error while updating admin:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to update admin!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please try again!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input!')
+              break
+            default:
+              toast.error('Error while adding admin. Please try again!')
+              break
+          }
+        }
+      } else {
+        toast.error('An unexpected error occurred!')
+        console.error('Error while updating admin:', error)
+      }
     }
   }
   return (

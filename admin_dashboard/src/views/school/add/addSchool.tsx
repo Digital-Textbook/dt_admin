@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import type { FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
+import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import CustomTextField from '@/components/shared/Input-field/TextField'
 import DzongkhagTextField from '@/components/shared/Dzongkhag/DzongkhagField'
@@ -49,8 +48,7 @@ const AddSchool = () => {
               toast.error('User unauthorized. User does not have permission to create school!')
               break
             case 401:
-              toast.error('Session expired. Please login again!')
-
+              toast.error('User is not authorized. Please login again!')
               break
             case 400:
               toast.error('Bad request. Please check your input.')
@@ -62,6 +60,7 @@ const AddSchool = () => {
         }
       } else {
         toast.error('An unexpected error occurred!')
+        console.log('An unexpected error occurred:', error)
       }
     }
   }

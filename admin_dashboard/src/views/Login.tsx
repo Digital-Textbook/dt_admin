@@ -71,7 +71,7 @@ const Login = ({ mode }: { mode: Mode }) => {
               toast.error('User already logged in on another device. Please try again!')
               break
             case 401:
-              toast.error('Unauthorized admin. Please verify your account! OR reset your password!')
+              toast.error('Invalid credentials. Please try again!')
               break
             case 400:
               toast.error('Bad request. Please check your input.')

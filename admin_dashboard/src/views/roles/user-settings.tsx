@@ -50,8 +50,14 @@ const RoleSettingsPage = () => {
   const [adminData, setAdminData] = useState<Admin[]>([])
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-
+  const [user, setUser] = useState<any>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem('userData')
+    const userData = storedUserData ? JSON.parse(storedUserData) : null
+    setUser(userData)
+  }, [])
 
   const fetchAdminData = async () => {
     try {
@@ -79,11 +85,34 @@ const RoleSettingsPage = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/admin/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/admin/${selectedId}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         toast.success('Admin and associated data deleted successfully!')
         await fetchAdminData()
       } catch (error) {
-        toast.error('Error while deleting admin!')
+        if (axios.isAxiosError(error)) {
+          const { response } = error
+
+          if (response) {
+            switch (response?.status) {
+              case 403:
+                toast.error('User unauthorized. User does not have permission to delete admin!')
+                break
+              case 401:
+                toast.error('User is not authorized. Please try again!')
+                break
+              default:
+                toast.error('Error while deleting admin. Please try again!')
+                break
+            }
+          }
+        } else {
+          toast.error('An unexpected error occurred!')
+          console.error('Error while deleting admin:', error)
+        }
       } finally {
         setOpenDeleteDialog(false)
         setSelectedId(null)
@@ -202,6 +231,7 @@ const RoleSettingsPage = () => {
                             backgroundColor: '#388e3c'
                           }
                         }}
+                        disabled={row.id === user?.id}
                       >
                         <i className='ri-edit-line' />
                       </IconButton>
@@ -216,6 +246,7 @@ const RoleSettingsPage = () => {
                             backgroundColor: '#d32f2f'
                           }
                         }}
+                        disabled={row.id === user?.id}
                       >
                         <i className='ri-delete-bin-line' />
                       </IconButton>

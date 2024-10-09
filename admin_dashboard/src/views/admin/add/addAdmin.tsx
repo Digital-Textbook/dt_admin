@@ -16,26 +16,54 @@ const AddAdmin = () => {
   const [roleName, setRoleName] = useState('')
   const [roleId, setRoleId] = useState('')
   const [mobileNo, setMobileNo] = useState('')
-
   const router = useRouter()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      await axios.post(`http://localhost:3001/digital-textbook/admin/register`, {
-        name,
-        email,
-        mobileNo,
-        roleId
-      })
+      await axios.post(
+        `http://localhost:3001/digital-textbook/admin/register`,
+        {
+          name,
+          email,
+          mobileNo,
+          roleId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('Admin added successfully!')
       setTimeout(() => {
         router.push('/roles')
       }, 3000)
     } catch (error) {
-      toast.error('Error while adding admin. Please try again!')
-      console.error('Error while adding admin:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create admin!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please try again!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input!')
+              break
+            default:
+              toast.error('Error while adding admin. Please try again!')
+              break
+          }
+        }
+      } else {
+        toast.error('An unexpected error occurred!')
+        console.error('Error while adding admin:', error)
+      }
     }
   }
   return (

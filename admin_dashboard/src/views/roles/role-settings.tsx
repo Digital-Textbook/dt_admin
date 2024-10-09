@@ -72,13 +72,39 @@ const RoleSettingsPage = () => {
   const handleDeleteRole = async () => {
     if (roleId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/role/${roleId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/role/${roleId}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         toast.success('Role and associated data deleted successfully!')
         setTimeout(() => {
           window.location.reload()
         }, 3000)
       } catch (error) {
-        toast.error('Error while deleting role!')
+        if (axios.isAxiosError(error)) {
+          const { response } = error
+
+          if (response) {
+            switch (response?.status) {
+              case 403:
+                toast.error('User unauthorized. User does not have permission to delete role!')
+                break
+              case 401:
+                toast.error('User is not authorized. Please login again!')
+                break
+              case 400:
+                toast.error('Bad request. Please check Role ID.')
+                break
+              default:
+                toast.error('An unexpected error occurred. Please try again later.')
+                break
+            }
+          }
+        } else {
+          toast.error('An unexpected error occurred. Please try again later!')
+          console.log('An unexpected error occurred:', error)
+        }
       } finally {
         setOpenDeleteRoleDialog(false)
         setRoleId(null)

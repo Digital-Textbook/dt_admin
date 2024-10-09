@@ -19,18 +19,47 @@ const AddPermissionSettingd = () => {
     e.preventDefault()
 
     try {
-      await axios.post('http://localhost:3001/digital-textbook/permission', {
-        permissionName,
-        action,
-        subject
-      })
+      await axios.post(
+        'http://localhost:3001/digital-textbook/permission',
+        {
+          permissionName,
+          action,
+          subject
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('Permission added successfully!')
       setTimeout(() => {
         router.push('/permission')
       }, 3000)
     } catch (error) {
-      toast.error('Error while creating permission. Please try again!')
-      console.error('Error while creating permission:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create permission!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input data.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while creating permission. Please try again!')
+        console.error('Error while creating permission:', error)
+      }
     }
   }
 
@@ -45,6 +74,30 @@ const AddPermissionSettingd = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
+              <Typography
+                ml={5}
+                mt={5}
+                sx={{
+                  background: '#fff8e1',
+                  padding: '20px',
+                  color: '#FFB400',
+                  borderRadius: '16px',
+                  fontSize: '14px'
+                }}
+              >
+                <strong>1. Permission Name:</strong> Specifies the action a role is authorized to perform, such as
+                "Create User." It should be concise yet descriptive to ensure clarity in access control and prevent any
+                misinterpretation.
+                <br />
+                <br />
+                <strong>2. Action Field:</strong> Defines the specific operation that can be executed. Common actions
+                align with CRUD operations: Create, Read, Update, and Delete.
+                <br />
+                <br />
+                <strong>3. Subject Field:</strong> Represents the entity or resource on which the action is to be
+                applied. This refers to the domain object being accessed or modified, ensuring precise control over
+                permissible operations.
+              </Typography>
               <CustomTextField
                 title='Permission Name'
                 label='Permission Name'
@@ -77,30 +130,6 @@ const AddPermissionSettingd = () => {
                 onChange={e => setSubject(e.target.value)}
                 icon='ri-book-3-line'
               />
-              <Typography
-                ml={5}
-                mt={5}
-                sx={{
-                  background: '#fff8e1',
-                  padding: '20px',
-                  color: '#FFB400',
-                  borderRadius: '16px',
-                  fontSize: '14px'
-                }}
-              >
-                <strong>1. Permission Name:</strong> Specifies the action a role is authorized to perform, such as
-                "Create User." It should be concise yet descriptive to ensure clarity in access control and prevent any
-                misinterpretation.
-                <br />
-                <br />
-                <strong>2. Action Field:</strong> Defines the specific operation that can be executed. Common actions
-                align with CRUD operations: Create, Read, Update, and Delete.
-                <br />
-                <br />
-                <strong>3. Subject Field:</strong> Represents the entity or resource on which the action is to be
-                applied. This refers to the domain object being accessed or modified, ensuring precise control over
-                permissible operations.
-              </Typography>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit' color='success'>

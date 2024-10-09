@@ -111,20 +111,46 @@ const UpdateRoleSettings = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/role/${id}/permissions`, {
-        permissionIds: selectedPermissions,
-        roleData: {
-          name,
-          description
+      const response = await axios.patch(
+        `http://localhost:3001/digital-textbook/role/${id}/permissions`,
+        {
+          permissionIds: selectedPermissions,
+          roleData: {
+            name,
+            description
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
         }
-      })
+      )
       toast.success('Role updated successfully!')
       setTimeout(() => {
         router.push('/roles')
       }, 3000)
     } catch (error) {
-      toast.error('Error while updating role. Please try again!')
-      console.error('Error while updating role:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to delete admin!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please try again!')
+              break
+            default:
+              toast.error('Error while deleting admin. Please try again!')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while updating role. Please try again!')
+        console.error('Error while updating role:', error)
+      }
     }
   }
 

@@ -18,14 +18,43 @@ const AddRoleSettings = () => {
     e.preventDefault()
 
     try {
-      await axios.post('http://localhost:3001/digital-textbook/role', { name, description })
+      await axios.post(
+        'http://localhost:3001/digital-textbook/role',
+        { name, description },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('Role added successfully!')
       setTimeout(() => {
         router.push('/roles')
       }, 3000)
     } catch (error) {
-      toast.error('Error while adding role. Please try again!')
-      console.error('Error while adding role:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create role!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input data.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('An unexpected error occurred. Please try again later!')
+        console.log('An unexpected error occurred:', error)
+      }
     }
   }
 

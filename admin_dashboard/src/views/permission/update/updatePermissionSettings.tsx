@@ -51,18 +51,47 @@ const UpdatePermissionSettings = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/permission/${id}`, {
-        permissionName,
-        action,
-        subject
-      })
+      await axios.patch(
+        `http://localhost:3001/digital-textbook/permission/${id}`,
+        {
+          permissionName,
+          action,
+          subject
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('Permission updated successfully!')
       setTimeout(() => {
         router.push('/permission')
       }, 3000)
     } catch (error) {
-      toast.error('Error while updating permission. Please try again!')
-      console.error('Error while updating permission:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to update permission!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input data.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while updating permission. Please try again!')
+        console.error('Error while updating permission:', error)
+      }
     }
   }
 
@@ -115,7 +144,7 @@ const UpdatePermissionSettings = () => {
                 <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' type='reset' color='error'>
+                <Button variant='contained' type='reset' color='error' onClick={() => router.push('/permission')}>
                   Cancel
                 </Button>
               </Grid>
