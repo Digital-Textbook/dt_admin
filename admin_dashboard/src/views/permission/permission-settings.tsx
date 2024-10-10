@@ -7,14 +7,12 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   Grid,
   IconButton,
   Typography
 } from '@mui/material'
-import Link from 'next/link'
 import tableStyles from '@core/styles/table.module.css'
 
 import { useEffect, useState } from 'react'
@@ -97,13 +95,39 @@ const RoleSettingsPage = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/permission/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/permission/${selectedId}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         toast.success('Permission deleted successfully!')
         setTimeout(() => {
           window.location.reload()
         }, 3000)
       } catch (error) {
-        toast.error('Error while deleting permission!')
+        if (axios.isAxiosError(error)) {
+          const { response } = error
+
+          if (response) {
+            switch (response?.status) {
+              case 403:
+                toast.error('User unauthorized. User does not have permission to delete permission!')
+                break
+              case 401:
+                toast.error('User is not authorized. Please login again!')
+                break
+              case 400:
+                toast.error('Bad request. Please check your Permission ID.')
+                break
+              default:
+                toast.error('An unexpected error occurred. Please try again later.')
+                break
+            }
+          }
+        } else {
+          toast.error('Error while deleting permission. Please try again!')
+          console.error('Error while deleting permission:', error)
+        }
       } finally {
         setOpenDeleteDialog(false)
         setSelectedId(null)

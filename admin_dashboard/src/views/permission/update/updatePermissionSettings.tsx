@@ -81,7 +81,7 @@ const UpdatePermissionSettings = () => {
               toast.error('User is not authorized. Please login again!')
               break
             case 400:
-              toast.error('Bad request. Please check your input data.')
+              toast.error('Bad request. Please check your permission input data!')
               break
             default:
               toast.error('An unexpected error occurred. Please try again later.')

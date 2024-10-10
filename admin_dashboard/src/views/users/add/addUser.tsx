@@ -2,24 +2,15 @@
 
 import { useState } from 'react'
 
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  TextField
-} from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import type { FormEvent } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import CustomTextField from '@/components/shared/Input-field/TextField'
+import UserTypeField from '@/components/shared/user-type/UserTypeField'
+import OtpOptionSelectField from '@/components/shared/otp/OtpSelectField'
 
 const AddUser = () => {
   const [name, setName] = useState('')
@@ -100,29 +91,7 @@ const AddUser = () => {
                 icon='ri-phone-line'
               />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='userType'>User Type</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='userType'
-                  name='userType'
-                  value={userType}
-                  required
-                  onChange={e => setUserType(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-add-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  <MenuItem value='BhutaneseCid'>BhutaneseCid</MenuItem>
-                  <MenuItem value='BhutanesePermit'>BhutanesePermit</MenuItem>
-                  <MenuItem value='Non-Bhutanese'>Non-Bhutanese</MenuItem>
-                </TextField>
-              </Grid>
+              <UserTypeField userType={userType} setUserType={setUserType} />
 
               <CustomTextField
                 title='Email'
@@ -135,28 +104,7 @@ const AddUser = () => {
                 icon='ri-mail-send-line'
               />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='otpOption'>OTP Option</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='otpOption'
-                  name='otpOption'
-                  value={otpOption}
-                  required
-                  onChange={e => setOtpOption(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-mail-add-fill' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  <MenuItem value='email'>Email</MenuItem>
-                  <MenuItem value='phone'>Phone</MenuItem>
-                </TextField>
-              </Grid>
+              <OtpOptionSelectField otpOption={otpOption} setOtpOption={setOtpOption} />
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit' color='success'>

@@ -1,25 +1,15 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
-
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  TextField
-} from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import UpdateMessage from '@/components/shared/message/updated-warning'
+import CustomTextField from '@/components/shared/Input-field/TextField'
+import UserTypeField from '@/components/shared/user-type/UserTypeField'
 
 type UserData = {
   id: string
@@ -42,7 +32,6 @@ const UpdateUser = () => {
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
 
-  /// Fetch data for update
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -70,13 +59,21 @@ const UpdateUser = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/user/${id}`, {
-        name,
-        cidNo,
-        mobileNo,
-        userType,
-        email
-      })
+      await axios.patch(
+        `http://localhost:3001/digital-textbook/user/${id}`,
+        {
+          name,
+          cidNo,
+          mobileNo,
+          userType,
+          email
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('User updated successfully!')
       setTimeout(() => {
         router.push('/user')
@@ -99,107 +96,51 @@ const UpdateUser = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={6}>
               <UpdateMessage message='user' />
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <TextField
-                  fullWidth
-                  id='name'
-                  name='name'
-                  placeholder='John Doe'
-                  value={name}
-                  required
-                  onChange={e => setName(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-user-3-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Name'
+                label='Name'
+                id='name'
+                name='name'
+                value={name}
+                required
+                onChange={e => setName(e.target.value)}
+                icon='ri-user-3-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='cidNo'>CID No.</InputLabel>
-                <TextField
-                  fullWidth
-                  id='cidNo'
-                  name='cidNo'
-                  value={cidNo}
-                  required
-                  onChange={e => setCidNo(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-book-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='CID NO.'
+                label='CID NO.'
+                id='cidNo'
+                name='cidNo'
+                value={cidNo}
+                required
+                onChange={e => setCidNo(e.target.value)}
+                icon='ri-book-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='mobileNo'>Mobile No.</InputLabel>
-                <TextField
-                  fullWidth
-                  id='mobileNo'
-                  name='mobileNo'
-                  value={mobileNo}
-                  required
-                  onChange={e => setMobileNo(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-graduation-cap-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                ></TextField>
-              </Grid>
+              <CustomTextField
+                title='Mobile NO.'
+                label='Mobile NO.'
+                id='mobileNo'
+                name='mobileNo'
+                value={mobileNo}
+                required
+                onChange={e => setMobileNo(e.target.value)}
+                icon='ri-phone-line'
+              />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='userType'>User Type</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  id='userType'
-                  name='userType'
-                  value={userType}
-                  required
-                  onChange={e => setUserType(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-edit-2-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                >
-                  <MenuItem value='BhutaneseCid'>BhutaneseCid</MenuItem>
-                  <MenuItem value='BhutanesePermit'>BhutanesePermit</MenuItem>
-                  <MenuItem value='Non_Bhutanese'>Non_Bhutanese</MenuItem>
-                </TextField>
-              </Grid>
+              <UserTypeField userType={userType} setUserType={setUserType} />
 
-              <Grid item xs={12} sm={6}>
-                <InputLabel htmlFor='email'>Email</InputLabel>
-                <TextField
-                  fullWidth
-                  id='email'
-                  name='email'
-                  placeholder=''
-                  value={email}
-                  required
-                  onChange={e => setEmail(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <i className='ri-pages-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </Grid>
+              <CustomTextField
+                title='Email'
+                label='Email'
+                id='email'
+                name='email'
+                value={email}
+                required
+                onChange={e => setEmail(e.target.value)}
+                icon='ri-mail-send-line'
+              />
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit' color='success'>

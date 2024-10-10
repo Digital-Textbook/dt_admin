@@ -81,10 +81,18 @@ const UpdateSubject = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/subject/${id}`, {
-        classId,
-        subjectName
-      })
+      const response = await axios.patch(
+        `http://localhost:3001/digital-textbook/subject/${id}`,
+        {
+          classId,
+          subjectName
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('Subject updated successfully!')
       setTimeout(() => {
         router.push('/subject')

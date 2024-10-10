@@ -38,17 +38,17 @@ const SubjectPage = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchSubjectData = async () => {
-      try {
-        const response: AxiosResponse<subjects[]> = await axios.get('http://localhost:3001/digital-textbook/subject')
-        setsubjectData(response.data)
-      } catch (err) {
-        console.error('Error fetching textbook data:', err)
-        toast.error('Error while fetching textbook!')
-      }
+  const fetchSubjectData = async () => {
+    try {
+      const response: AxiosResponse<subjects[]> = await axios.get('http://localhost:3001/digital-textbook/subject')
+      setsubjectData(response.data)
+    } catch (err) {
+      console.error('Error fetching textbook data:', err)
+      toast.error('Error while fetching textbook!')
     }
+  }
 
+  useEffect(() => {
     fetchSubjectData()
   }, [])
 
@@ -64,13 +64,40 @@ const SubjectPage = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/subject/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/subject/${selectedId}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         toast.success('Subject deleted successfully!')
-        setTimeout(() => {
-          window.location.reload()
-        }, 3000)
+        await fetchSubjectData()
+        // setTimeout(() => {
+        //   window.location.reload()
+        // }, 3000)
       } catch (error) {
-        toast.error('Error while deleting subject!')
+        if (axios.isAxiosError(error)) {
+          const { response } = error
+
+          if (response) {
+            switch (response?.status) {
+              case 403:
+                toast.error('User unauthorized. User does not have permission to delete subject!')
+                break
+              case 401:
+                toast.error('User is not authorized. Please login again!')
+                break
+              case 400:
+                toast.error('Bad request. Please check Subject ID')
+                break
+              default:
+                toast.error('An unexpected error occurred. Please try again later.')
+                break
+            }
+          }
+        } else {
+          toast.error('Error while deleting subject!. Please try again!')
+          console.error('Error uploading textbook:', error)
+        }
       } finally {
         setOpenDeleteDialog(false)
         setSelectedId(null)

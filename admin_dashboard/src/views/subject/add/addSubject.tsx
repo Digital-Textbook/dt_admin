@@ -20,14 +20,41 @@ const AddSubject = () => {
     e.preventDefault()
 
     try {
-      await axios.post('http://localhost:3001/digital-textbook/subject', { classId, subjectName })
+      await axios.post(
+        'http://localhost:3001/digital-textbook/subject',
+        { classId, subjectName },
+        {
+          headers: { Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}` }
+        }
+      )
       toast.success('Textbook uploaded successfully!')
       setTimeout(() => {
         router.push('/subject')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading textbook. Please try again!')
-      console.error('Error uploading textbook:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create subject!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('Bad request. Please check your input data.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while uploading textbook. Please try again!')
+        console.error('Error uploading textbook:', error)
+      }
     }
   }
 

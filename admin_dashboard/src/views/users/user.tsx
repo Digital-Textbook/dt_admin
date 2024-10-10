@@ -40,20 +40,19 @@ const UserTable = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response: AxiosResponse<UserData[]> = await axios.get('http://localhost:3001/digital-textbook/user')
-        setUserData(response.data)
-      } catch (error) {
-        console.log('Error fetching user data!:', error)
-        toast.error('Error while fetching textbook!')
-      }
+  const fetchUserData = async () => {
+    try {
+      const response: AxiosResponse<UserData[]> = await axios.get('http://localhost:3001/digital-textbook/user')
+      setUserData(response.data)
+    } catch (error) {
+      console.log('Error fetching user data!:', error)
+      toast.error('Error while fetching textbook!')
     }
+  }
+
+  useEffect(() => {
     fetchUserData()
   }, [])
-
-  console.log('User table data::', userData)
 
   const handleEdit = (id: string) => {
     router.push(`/user/update?id=${id}`)
@@ -67,7 +66,11 @@ const UserTable = () => {
   const handleConfirmDelete = async () => {
     if (selectedId) {
       try {
-        await axios.delete(`http://localhost:3001/digital-textbook/user/${selectedId}`)
+        await axios.delete(`http://localhost:3001/digital-textbook/user/${selectedId}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        })
         setUserData(prevData => prevData.filter(item => item.id !== selectedId))
         toast.success('User and associated data deleted successfully!')
       } catch (error) {
@@ -157,10 +160,10 @@ const UserTable = () => {
                         <Typography>{row.email}</Typography>
                       </td>
                       <td className='!plb-1'>
-                        <Typography>{row.status}</Typography>
+                        <Typography>{row.userType}</Typography>
                       </td>
                       <td className='!plb-1'>
-                        <Typography>{row.userType}</Typography>
+                        <Typography>{row.status}</Typography>
                       </td>
                       <td className='!plb-1'>
                         <Box

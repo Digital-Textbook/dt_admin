@@ -55,12 +55,28 @@ const UserDropdown = () => {
 
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
-
+  const [profile, setProfile] = useState<any>(null)
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData')
     const userData = storedUserData ? JSON.parse(storedUserData) : null
     setUser(userData)
   }, [])
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (user && user.id) {
+        try {
+          const response = await axios.get(`http://localhost:3001/digital-textbook/auth/${user.id}`)
+          setProfile(response.data)
+        } catch (err) {
+          console.error('Error fetching profile data:', err)
+          toast.error('Error while fetching profile data!')
+        }
+      }
+    }
+
+    fetchProfileData()
+  }, [user])
 
   const handleLogout = async () => {
     localStorage.removeItem('adminAccessToken')
@@ -120,9 +136,9 @@ const UserDropdown = () => {
                     <Avatar alt='John Doe' src='/images/avatars/1.png' />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        {user?.name || 'No Name Available'}
+                        {profile?.name || 'No Name Available'}
                       </Typography>
-                      <Typography>{user?.role.name || 'No Roles Available'}</Typography>
+                      <Typography>{profile?.role.name || 'No Roles Available'}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
