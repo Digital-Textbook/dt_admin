@@ -188,14 +188,27 @@ const SubjectPage = () => {
                       <Typography>{formatDate(row.createdAt)}</Typography>
                     </td>
                     <td className='!plb-1'>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        <Button variant='contained' color='success' onClick={() => handleEdit(row.id)}>
-                          Edit
-                        </Button>
-                        <Button variant='contained' color='error' onClick={() => handleDeleteClick(row.id)}>
-                          Delete
-                        </Button>
-                      </Box>
+                      <IconButton
+                        aria-label='edit'
+                        onClick={() => handleEdit(row.id)}
+                        sx={{
+                          backgroundColor: '#e8f5e9',
+                          color: '#4caf50'
+                        }}
+                      >
+                        <i className='ri-edit-line' />
+                      </IconButton>
+
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => handleDeleteClick(row.id)}
+                        sx={{
+                          backgroundColor: '#ffebee',
+                          color: '#f44336'
+                        }}
+                      >
+                        <i className='ri-delete-bin-line' />
+                      </IconButton>
                     </td>
                   </tr>
                 ))

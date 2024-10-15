@@ -192,13 +192,13 @@ const RoleSettingsPage = () => {
                           {row.name.charAt(0).toUpperCase()}
                         </div>
                         <div className='flex flex-col'>
-                          <Typography>{row.name}</Typography>
+                          <Typography>{row?.name}</Typography>
                         </div>
                       </div>
                     </td>
 
                     <td className='!plb-1'>
-                      <Typography>{row.email}</Typography>
+                      <Typography>{row?.email}</Typography>
                     </td>
 
                     <td>
@@ -213,7 +213,7 @@ const RoleSettingsPage = () => {
                             row.status === 'inactive' ? '#f44336' : row.status === 'active' ? '#56ca00' : '#cccccc',
                           color: 'white'
                         }}
-                        label={row.status}
+                        label={row?.status}
                       />
                     </td>
 
@@ -226,10 +226,7 @@ const RoleSettingsPage = () => {
                         onClick={() => handleEdit(row.id)}
                         sx={{
                           backgroundColor: '#e8f5e9',
-                          color: '#4caf50',
-                          '&:hover': {
-                            backgroundColor: '#388e3c'
-                          }
+                          color: '#4caf50'
                         }}
                         disabled={row.id === user?.id}
                       >
@@ -241,10 +238,7 @@ const RoleSettingsPage = () => {
                         onClick={() => handleDelete(row.id)}
                         sx={{
                           backgroundColor: '#ffebee',
-                          color: '#f44336',
-                          '&:hover': {
-                            backgroundColor: '#d32f2f'
-                          }
+                          color: '#f44336'
                         }}
                         disabled={row.id === user?.id}
                       >

@@ -1,65 +1,39 @@
-//MUI Imports
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Grid'
-
-// Type Imports
+'use client'
+import { Card, CardContent, CardHeader, Grid, Paper, Typography } from '@mui/material'
 import type { ThemeColor } from '@core/types'
-
-// Components Imports
 import OptionMenu from '@core/components/option-menu'
 import CustomAvatar from '@core/components/mui/Avatar'
+import { useEffect, useState } from 'react'
+import axios, { AxiosResponse } from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-type DataType = {
+type DashboardItem = {
+  name: string
+  count: string
   icon: string
-  stats: string
-  title: string
   color: ThemeColor
 }
 
-// Vars
-const data: DataType[] = [
-  {
-    stats: '245k',
-    title: 'Sales',
-    color: 'primary',
-    icon: 'ri-pie-chart-2-line'
-  },
-  {
-    stats: '12.5k',
-    title: 'Users',
-    color: 'success',
-    icon: 'ri-group-line'
-  },
-  {
-    stats: '1.54k',
-    color: 'warning',
-    title: 'Products',
-    icon: 'ri-macbook-line'
-  },
-  {
-    stats: '$88k',
-    color: 'info',
-    title: 'Revenue',
-    icon: 'ri-money-dollar-circle-line'
-  },
-  {
-    stats: '245k',
-    title: 'Textbook',
-    color: 'primary',
-    icon: 'ri-pie-chart-2-line'
-  },
-  {
-    stats: '245k',
-    title: 'Subject',
-    color: 'primary',
-    icon: 'ri-book-line'
-  }
-]
-
 const Overview = () => {
+  const [dashboardData, setDashboardData] = useState<DashboardItem[]>([])
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response: AxiosResponse<DashboardItem[]> = await axios.get(
+          'http://localhost:3001/digital-textbook/common/dashboard'
+        )
+        setDashboardData(response.data)
+      } catch (err) {
+        console.error('Error fetching dashobard item:', err)
+        toast.error('Error while fetching dashboard item!')
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  console.log('Dashboard item::', dashboardData)
   return (
     <Card className='bs-full'>
       <CardHeader
@@ -67,23 +41,29 @@ const Overview = () => {
         action={<OptionMenu iconClassName='text-textPrimary' options={['Refresh', 'Share', 'Update']} />}
         subheader={
           <p className='mbs-3'>
-            <span className='font-medium text-textPrimary'>Total 48.5% Growth 😎 this month</span>
+            <span className='font-medium text-textPrimary'>Overall analysis of 'Digital Textbook'</span>
           </p>
         }
       />
       <CardContent className='!pbs-5'>
         <Grid container spacing={6}>
-          {data.map((item, index) => (
-            <Grid item xs={6} md={2} key={index}>
-              <div className='flex items-center gap-3'>
+          {dashboardData.map((item, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid
+                component={Paper}
+                elevation={3}
+                className='flex items-center gap-3'
+                sx={{ borderRadius: '8px' }}
+                p={3}
+              >
                 <CustomAvatar variant='rounded' color={item.color} className='shadow-xs'>
                   <i className={item.icon}></i>
                 </CustomAvatar>
                 <div>
-                  <Typography>{item.title}</Typography>
-                  <Typography variant='h5'>{item.stats}</Typography>
+                  <Typography className='capitalize'>{item.name}</Typography>
+                  <Typography variant='h5'>{item.count}</Typography>
                 </div>
-              </div>
+              </Grid>
             </Grid>
           ))}
         </Grid>

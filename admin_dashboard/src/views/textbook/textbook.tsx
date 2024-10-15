@@ -61,11 +61,15 @@ const TextbookPage = () => {
     fetchTextbookData()
   }, [])
 
+  const handleView = (id: string) => {
+    router.push(`/textbook/view?id=${id}`)
+  }
+
   const handleEdit = (id: string) => {
     router.push(`/textbook/update?id=${id}`)
   }
 
-  const handleDeleteClick = (id: string) => {
+  const handleDelete = (id: string) => {
     setSelectedId(id)
     setOpenDeleteDialog(true)
   }
@@ -217,20 +221,15 @@ const TextbookPage = () => {
                     </td>
 
                     <td className='!plb-1'>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: 1
-                        }}
-                      >
-                        <Button variant='contained' color='success' onClick={() => handleEdit(row.id)}>
-                          Edit
-                        </Button>
-                        <Button variant='contained' color='error' onClick={() => handleDeleteClick(row.id)}>
-                          Delete
-                        </Button>
-                      </Box>
+                      <IconButton aria-label='view' onClick={() => handleView(row.id)}>
+                        <i className='ri-eye-line' />
+                      </IconButton>
+                      <IconButton aria-label='edit' onClick={() => handleEdit(row.id)}>
+                        <i className='ri-edit-line' />
+                      </IconButton>
+                      <IconButton aria-label='delete' onClick={() => handleDelete(row.id)}>
+                        <i className='ri-delete-bin-line' />
+                      </IconButton>
                     </td>
                   </tr>
                 ))
