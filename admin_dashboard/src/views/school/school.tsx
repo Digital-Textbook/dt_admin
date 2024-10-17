@@ -27,6 +27,7 @@ import WarningMessage from '@/components/shared/message/warnings-message'
 type schools = {
   id: string
   name: string
+  gewog: string
   dzongkhag: string
   createdAt: string
 }
@@ -34,7 +35,7 @@ type schools = {
 const SchoolPage = () => {
   const router = useRouter()
   const [schoolData, setSchoolData] = useState<schools[]>([])
-  const [warningmessage, setWarningMessage] = useState('school')
+  const warningmessage = 'school'
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -47,9 +48,23 @@ const SchoolPage = () => {
           }
         })
         setSchoolData(response.data)
-      } catch (err) {
-        console.error('Error fetching school data:', err)
-        toast.error('Error while fetching school!')
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const { response } = error
+
+          if (response) {
+            switch (response?.status) {
+              case 404:
+                console.error('Schools not found in the database!')
+                break
+              default:
+                console.error('An error occurred. Please try again later.')
+                break
+            }
+          }
+        } else {
+          console.error('An unexpected error occurred!')
+        }
       }
     }
 
@@ -144,6 +159,7 @@ const SchoolPage = () => {
             <thead>
               <tr>
                 <th>Subject</th>
+                <th>Gewog</th>
                 <th>Dzongkhag</th>
                 <th>Created Date</th>
                 <th>Action</th>
@@ -161,6 +177,9 @@ const SchoolPage = () => {
                   <tr key={index}>
                     <td className='!plb-1'>
                       <Typography>{row.name}</Typography>
+                    </td>
+                    <td className='!plb-1'>
+                      <Typography>{row.gewog}</Typography>
                     </td>
                     <td className='!plb-1'>
                       <Typography>{row.dzongkhag}</Typography>

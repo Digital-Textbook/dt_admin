@@ -70,6 +70,15 @@ const DzongkhagTextField: FC<CustomDzongkhagSelectProps> = ({ value, onChange, r
 
 export default DzongkhagTextField
 
+// <DzongkhagTextField
+// value={dzongkhag}
+// required
+// onChange={(dzongkhagId, dzongkhagName) => {
+//   setDzongkhag(dzongkhagName)
+//   setDzongkhagId(dzongkhagId)
+// }}
+// />
+
 // const [dzongkhagData, setDzongkhagData] = useState<dzongkhags[]>([])
 
 // useEffect(() => {

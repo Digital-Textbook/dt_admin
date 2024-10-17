@@ -74,13 +74,34 @@ const UpdateUser = () => {
           }
         }
       )
-      toast.success('User updated successfully!')
+      toast.success('Student updated successfully!')
       setTimeout(() => {
-        router.push('/user')
+        router.push('/student')
       }, 3000)
     } catch (error) {
-      toast.error('Error while uploading user. Please try again!')
-      console.error('Error uploading user:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create a student!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('A request with invalid parameters. Please check your input parameters.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while updating student. Please try again!')
+        console.error('Error updating student:', error)
+      }
     }
   }
 
@@ -89,7 +110,7 @@ const UpdateUser = () => {
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Update User' />
+          <CardHeader title='Update Student' />
           <Divider />
         </Grid>
         <CardContent>
@@ -146,7 +167,7 @@ const UpdateUser = () => {
                 <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
-                <Button variant='contained' color='error' onClick={() => router.push('/user')}>
+                <Button variant='contained' color='error' onClick={() => router.push('/student')}>
                   Cancel
                 </Button>
               </Grid>

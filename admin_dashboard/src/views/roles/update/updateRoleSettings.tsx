@@ -137,13 +137,16 @@ const UpdateRoleSettings = () => {
         if (response) {
           switch (response?.status) {
             case 403:
-              toast.error('User unauthorized. User does not have permission to delete admin!')
+              toast.error('User unauthorized. User does not have permission to create a student!')
               break
             case 401:
-              toast.error('User is not authorized. Please try again!')
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('A request with invalid parameters. Please check your input parameters.')
               break
             default:
-              toast.error('Error while deleting admin. Please try again!')
+              toast.error('An unexpected error occurred. Please try again later.')
               break
           }
         }

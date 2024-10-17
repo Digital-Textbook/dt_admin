@@ -44,7 +44,7 @@ const AddRoleSettings = () => {
               toast.error('User is not authorized. Please login again!')
               break
             case 400:
-              toast.error('Bad request. Please check your input data.')
+              toast.error('A request with invalid parameters. Please check your input parameters.')
               break
             default:
               toast.error('An unexpected error occurred. Please try again later.')
@@ -52,8 +52,8 @@ const AddRoleSettings = () => {
           }
         }
       } else {
-        toast.error('An unexpected error occurred. Please try again later!')
-        console.log('An unexpected error occurred:', error)
+        toast.error('Error while adding role. Please try again!')
+        console.error('Error adding role:', error)
       }
     }
   }

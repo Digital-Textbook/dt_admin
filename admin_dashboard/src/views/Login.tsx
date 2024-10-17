@@ -74,7 +74,7 @@ const Login = ({ mode }: { mode: Mode }) => {
               toast.error('Invalid credentials. Please try again!')
               break
             case 400:
-              toast.error('Bad request. Please check your input.')
+              toast.error('A request with invalid parameters. Please check your input parameters.')
               break
             default:
               toast.error('An error occurred. Please try again later.')

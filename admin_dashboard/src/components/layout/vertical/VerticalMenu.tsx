@@ -55,8 +55,8 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
           <MenuItem href='/textbook' icon={<i className='ri-book-2-line' />}>
             Textbook
           </MenuItem>
-          <MenuItem href='/user' icon={<i className='ri-user-line' />}>
-            Users
+          <MenuItem href='/student' icon={<i className='ri-user-line' />}>
+            Student
           </MenuItem>
           <MenuItem href='/subject' icon={<i className='ri-git-repository-line' />}>
             Subject

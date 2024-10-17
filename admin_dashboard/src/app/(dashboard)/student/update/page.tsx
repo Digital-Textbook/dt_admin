@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid'
 
-import UpdateUser from '@/views/users/update/updateUser'
+import UpdateUser from '@/views/student/update/updateUser'
 
 const AddUserPage = () => {
   return (

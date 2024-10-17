@@ -1,6 +1,5 @@
 'use client'
 
-// Styles Imports
 import tableStyles from '@core/styles/table.module.css'
 import {
   Box,
@@ -45,7 +44,7 @@ const UserTable = () => {
       const response: AxiosResponse<UserData[]> = await axios.get('http://localhost:3001/digital-textbook/user')
       setUserData(response.data)
     } catch (error) {
-      console.log('Error fetching user data!:', error)
+      console.log('Error fetching student data!:', error)
       toast.error('Error while fetching textbook!')
     }
   }
@@ -55,7 +54,7 @@ const UserTable = () => {
   }, [])
 
   const handleEdit = (id: string) => {
-    router.push(`/user/update?id=${id}`)
+    router.push(`/student/update?id=${id}`)
   }
 
   const handleDeleteClick = (id: string) => {
@@ -72,9 +71,9 @@ const UserTable = () => {
           }
         })
         setUserData(prevData => prevData.filter(item => item.id !== selectedId))
-        toast.success('User and associated data deleted successfully!')
+        toast.success('Student and associated data deleted successfully!')
       } catch (error) {
-        toast.error('Error while deleting user!')
+        toast.error('Error while deleting student!')
       } finally {
         setOpenDeleteDialog(false)
         setSelectedId(null)
@@ -116,7 +115,7 @@ const UserTable = () => {
             </div>
           </Box>
 
-          <Button variant='contained' color='success' onClick={() => router.push('user/add')}>
+          <Button variant='contained' color='success' onClick={() => router.push('student/add')}>
             Add
           </Button>
         </Box>
@@ -197,7 +196,6 @@ const UserTable = () => {
         </div>
       </Card>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>

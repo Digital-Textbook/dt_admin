@@ -98,8 +98,29 @@ const UpdateSubject = () => {
         router.push('/subject')
       }, 3000)
     } catch (error) {
-      toast.error('Error while updating Subject. Please try again!')
-      console.error('Error while updating Subject:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create a student!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('A request with invalid parameters. Please check your input parameters.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while updating Subject. Please try again!')
+        console.error('Error while updating Subject:', error)
+      }
     }
   }
 

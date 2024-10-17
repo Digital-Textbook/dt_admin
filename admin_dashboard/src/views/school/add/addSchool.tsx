@@ -1,25 +1,69 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
-import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  TextField
+} from '@mui/material'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import CustomTextField from '@/components/shared/Input-field/TextField'
-import DzongkhagTextField from '@/components/shared/Dzongkhag/DzongkhagField'
+
+interface Gewog {
+  id: string
+  name: string
+}
+
+interface Dzongkhag {
+  dzongkhagId: string
+  name: string
+  gewogs: Gewog[]
+}
 
 const AddSchool = () => {
   const [schoolName, setSchoolName] = useState('')
-  const [dzongkhagId, setDzongkhagId] = useState('')
   const [dzongkhag, setDzongkhag] = useState('')
+  const [dzongkhagId, setDzongkhagId] = useState('')
+  const [gewog, setGewog] = useState('')
+  const [gewogId, setGewogId] = useState('')
+  const [dzongkhagData, setDzongkhagData] = useState<Dzongkhag[]>([])
+  const [filteredGewogs, setFilteredGewogs] = useState<Gewog[]>([])
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+
   useEffect(() => {
-    const storedUserData = localStorage.getItem('userData')
-    const userData = storedUserData ? JSON.parse(storedUserData) : null
-    setUser(userData)
+    const fetchDzongkhagGewogData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/digital-textbook/common/dzongkhag')
+        setDzongkhagData(response.data)
+      } catch (err) {
+        console.error('Error fetching dzongkhag data:', err)
+        toast.error('Error while fetching dzongkhag data!')
+      }
+    }
+
+    fetchDzongkhagGewogData()
   }, [])
+
+  useEffect(() => {
+    const selectedDzongkhag = dzongkhagData.find(dzo => dzo.name === dzongkhag)
+    if (selectedDzongkhag) {
+      setFilteredGewogs(selectedDzongkhag.gewogs)
+      setDzongkhagId(selectedDzongkhag.dzongkhagId)
+    } else {
+      setFilteredGewogs([])
+      setDzongkhagId('')
+    }
+  }, [dzongkhag, dzongkhagData])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -27,7 +71,7 @@ const AddSchool = () => {
     try {
       await axios.post(
         'http://localhost:3001/digital-textbook/school',
-        { dzongkhagId, schoolName },
+        { dzongkhagId, gewogId, schoolName },
         {
           headers: {
             Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
@@ -43,15 +87,15 @@ const AddSchool = () => {
         const { response } = error
 
         if (response) {
-          switch (response?.status) {
+          switch (response.status) {
             case 403:
-              toast.error('User unauthorized. User does not have permission to create school!')
+              toast.error('User unauthorized. User does not have permission to create a school!')
               break
             case 401:
               toast.error('User is not authorized. Please login again!')
               break
             case 400:
-              toast.error('Bad request. Please check your input.')
+              toast.error('A request with invalid parameters. Please check your input parameters.')
               break
             default:
               toast.error('An unexpected error occurred. Please try again later.')
@@ -59,8 +103,8 @@ const AddSchool = () => {
           }
         }
       } else {
-        toast.error('An unexpected error occurred!')
-        console.log('An unexpected error occurred:', error)
+        toast.error('Error while adding school. Please try again!')
+        console.error('Error adding school:', error)
       }
     }
   }
@@ -87,14 +131,67 @@ const AddSchool = () => {
                 icon='ri-graduation-cap-line'
               />
 
-              <DzongkhagTextField
-                value={dzongkhag}
-                required
-                onChange={(dzongkhagId, dzongkhagName) => {
-                  setDzongkhag(dzongkhagName)
-                  setDzongkhagId(dzongkhagId)
-                }}
-              />
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='dzongkhag'>Dzongkhag</InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id='dzongkhag'
+                  name='dzongkhag'
+                  value={dzongkhag}
+                  required
+                  onChange={e => setDzongkhag(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-graduation-cap-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                >
+                  {dzongkhagData.map((dzo, key) => (
+                    <MenuItem key={key} value={dzo.name}>
+                      {dzo.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='gewog'>Gewog</InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id='gewog' // Updated the ID here for consistency
+                  name='gewog'
+                  value={gewog}
+                  required
+                  onChange={e => {
+                    const selectedGewog = filteredGewogs.find(geo => geo.name === e.target.value)
+                    if (selectedGewog) {
+                      setGewog(e.target.value)
+                      setGewogId(selectedGewog.id)
+                    }
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-edit-2-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                >
+                  {filteredGewogs.length > 0 ? (
+                    filteredGewogs.map(geo => (
+                      <MenuItem key={geo.id} value={geo.name}>
+                        {geo.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>No gewogs available</MenuItem>
+                  )}
+                </TextField>
+              </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
                 <Button variant='contained' type='submit' color='success'>

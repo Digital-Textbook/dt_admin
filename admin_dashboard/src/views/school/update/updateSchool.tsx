@@ -21,17 +21,26 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation'
 import UpdateMessage from '@/components/shared/message/updated-warning'
 
-interface dzongkhags {
+interface Gewog {
   id: string
   name: string
 }
 
+interface Dzongkhag {
+  dzongkhagId: string
+  name: string
+  gewogs: Gewog[]
+}
 const UpdateSchool = () => {
   const [schoolName, setSchoolName] = useState('')
-  const [dzongkhagId, setDzongkhagId] = useState('')
   const [dzongkhag, setDzongkhag] = useState('')
-  const [dzongkhagData, setDzongkhagData] = useState<dzongkhags[]>([])
-  const [schoolData, setSchoolData] = useState<dzongkhags[]>([])
+  const [dzongkhagId, setDzongkhagId] = useState('')
+  const [gewog, setGewog] = useState('')
+  const [gewogId, setGewogId] = useState('')
+
+  const [dzongkhagData, setDzongkhagData] = useState<Dzongkhag[]>([])
+  const [schoolData, setSchoolData] = useState<Dzongkhag[]>([])
+  const [filteredGewogs, setFilteredGewogs] = useState<Gewog[]>([])
   const router = useRouter()
 
   const searchParams = useSearchParams()
@@ -40,7 +49,7 @@ const UpdateSchool = () => {
   useEffect(() => {
     const fetchDzongkhagData = async () => {
       try {
-        const response: AxiosResponse<dzongkhags[]> = await axios.get(
+        const response: AxiosResponse<Dzongkhag[]> = await axios.get(
           'http://localhost:3001/digital-textbook/common/dzongkhag'
         )
         setDzongkhagData(response.data)
@@ -62,6 +71,8 @@ const UpdateSchool = () => {
           setSchoolName(response.data.name)
           setDzongkhag(response.data.dzongkhag)
           setDzongkhagId(response.data.DzongkhagId)
+          setGewog(response.data.gewog)
+          setGewogId(response.data.gewogId)
         }
       } catch (err) {
         console.error('Error fetching textbook data:', err)
@@ -74,21 +85,62 @@ const UpdateSchool = () => {
     }
   }, [schoolId])
 
+  useEffect(() => {
+    const selectedDzongkhag = dzongkhagData.find(dzo => dzo.name === dzongkhag)
+    if (selectedDzongkhag) {
+      setFilteredGewogs(selectedDzongkhag.gewogs)
+      setDzongkhagId(selectedDzongkhag.dzongkhagId)
+    } else {
+      setFilteredGewogs([])
+      setDzongkhagId('')
+    }
+  }, [dzongkhag, dzongkhagData])
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await axios.patch(`http://localhost:3001/digital-textbook/school/${schoolId}`, {
-        dzongkhagId,
-        schoolName
-      })
+      const response = await axios.patch(
+        `http://localhost:3001/digital-textbook/school/${schoolId}`,
+        {
+          dzongkhagId,
+          gewogId,
+          schoolName
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('adminAccessToken')}`
+          }
+        }
+      )
       toast.success('School updated successfully!')
       setTimeout(() => {
         router.push('/school')
       }, 2000)
     } catch (error) {
-      toast.error('Error while updating school. Please try again!')
-      console.error('Error updating school:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create a student!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('A request with invalid parameters. Please check your input parameters.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while updating school. Please try again!')
+        console.error('Error updating school:', error)
+      }
     }
   }
 
@@ -122,6 +174,7 @@ const UpdateSchool = () => {
                   }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={6}>
                 <InputLabel htmlFor='dzongkhag'>Dzongkhag</InputLabel>
                 <TextField
@@ -131,31 +184,61 @@ const UpdateSchool = () => {
                   name='dzongkhag'
                   value={dzongkhag}
                   required
-                  onChange={e => {
-                    const selectedDzongkhag = dzongkhagData.find(dzo => dzo.name === e.target.value)
-                    if (selectedDzongkhag) {
-                      setDzongkhag(e.target.value)
-                      setDzongkhagId(selectedDzongkhag.id)
-                    }
-                  }}
+                  onChange={e => setDzongkhag(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position='start'>
-                        <i className='ri-map-pin-line' />
+                        <i className='ri-graduation-cap-line' />
                       </InputAdornment>
                     )
                   }}
                 >
-                  {dzongkhagData.map(dzo => (
-                    <MenuItem key={dzo.id} value={dzo.name}>
+                  {dzongkhagData.map((dzo, key) => (
+                    <MenuItem key={key} value={dzo.name}>
                       {dzo.name}
                     </MenuItem>
                   ))}
                 </TextField>
               </Grid>
 
+              <Grid item xs={12} sm={6}>
+                <InputLabel htmlFor='gewog'>Gewog</InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id='gewog'
+                  name='gewog'
+                  value={filteredGewogs.some(geo => geo.name === gewog) ? gewog : ''}
+                  required
+                  onChange={e => {
+                    const selectedGewog = filteredGewogs.find(geo => geo.name === e.target.value)
+                    if (selectedGewog) {
+                      setGewog(e.target.value)
+                      setGewogId(selectedGewog.id)
+                    }
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <i className='ri-edit-2-line' />
+                      </InputAdornment>
+                    )
+                  }}
+                >
+                  {filteredGewogs.length > 0 ? (
+                    filteredGewogs.map(geo => (
+                      <MenuItem key={geo.id} value={geo.name}>
+                        {geo.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>No gewogs available</MenuItem>
+                  )}
+                </TextField>
+              </Grid>
+
               <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                <Button variant='contained' type='submit'>
+                <Button variant='contained' type='submit' color='success'>
                   Submit
                 </Button>
                 <Button variant='contained' onClick={() => router.push('/subject')} color='error'>

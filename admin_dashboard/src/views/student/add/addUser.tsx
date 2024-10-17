@@ -33,18 +33,39 @@ const AddUser = () => {
         email,
         otpOption
       })
-      toast.success('User created successfully!')
+      toast.success('Student created successfully!')
       setTimeout(() => {
-        router.push('/user')
+        router.push('/student')
       }, 3000)
     } catch (error) {
-      toast.error('Error while creating user. Please try again!')
-      console.error('Error creating user:', error)
+      if (axios.isAxiosError(error)) {
+        const { response } = error
+
+        if (response) {
+          switch (response?.status) {
+            case 403:
+              toast.error('User unauthorized. User does not have permission to create a student!')
+              break
+            case 401:
+              toast.error('User is not authorized. Please login again!')
+              break
+            case 400:
+              toast.error('A request with invalid parameters. Please check your input parameters.')
+              break
+            default:
+              toast.error('An unexpected error occurred. Please try again later.')
+              break
+          }
+        }
+      } else {
+        toast.error('Error while adding student. Please try again!')
+        console.error('Error adding student:', error)
+      }
     }
   }
 
   const handleCancel = () => {
-    router.push(`/user`)
+    router.push(`/student`)
   }
 
   return (
@@ -52,7 +73,7 @@ const AddUser = () => {
       <Card>
         <ToastContainer />
         <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <CardHeader title='Add User' />
+          <CardHeader title='Add Student' />
           <Divider />
         </Grid>
         <CardContent>
